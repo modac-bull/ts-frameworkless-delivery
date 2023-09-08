@@ -8,7 +8,7 @@ const extractUrlParams = (route: Route, pathname: string) => {
   }
   const matches = pathname.match(route.testRegExp);
   if (!matches) {
-    return;
+    return params;
   }
   matches.shift();
   matches.forEach((paramValue, index) => {
@@ -28,7 +28,7 @@ type Route = {
   params: ParamsId;
 };
 type ParamsId = string[];
-type Params = { [key: string]: string };
+export type Params = { [key: string]: string };
 
 class Router {
   private routes: Route[];
@@ -77,7 +77,7 @@ class Router {
       testRegExp: new RegExp(`^${parsedPath}$`),
       callback,
       params,
-    }); 
+    });
     return this;
   }
 

@@ -16,6 +16,11 @@ init() 메서드로 라우터 시작
 */
 // const router = createRouter();
 const router = new Router();
-router.addRoute("/", pages.home).setNotFound(pages.notFound).init();
+router
+  .addRoute("/", pages.home)
+  .addRoute("/store", pages.storeList)
+  .addRoute("/store/:storeIdx", pages.storeDetail)
+  .setNotFound(pages.notFound)
+  .init();
 
 console.log("출력?");
