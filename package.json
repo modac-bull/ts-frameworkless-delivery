@@ -1,0 +1,32 @@
+{
+  "name": "ts-frameworkless-delivery",
+  "version": "1.0.0",
+  "description": "프레임워크없는 프론트엔드 개발 프로젝트 - 배달앱",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production",
+    "dev": "webpack-dev-server --mode development --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f-lab-edu/ts-frameworkless-delivery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/f-lab-edu/ts-frameworkless-delivery/issues"
+  },
+  "homepage": "https://github.com/f-lab-edu/ts-frameworkless-delivery#readme",
+  "devDependencies": {
+    "@babel/core": "^7.22.15",
+    "@babel/preset-env": "^7.22.15",
+    "babel-loader": "^9.1.3",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
