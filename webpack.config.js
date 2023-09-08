@@ -17,6 +17,21 @@ module.exports = {
         ],
         exclude: /node_modules/,
       },
+      {
+        test: /\.scss$/,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[local]_[hash:base64:5]",
+              },
+            },
+          },
+          "sass-loader",
+        ],
+      },
     ],
   },
   resolve: {
