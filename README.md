@@ -42,7 +42,7 @@
 - 도구 선택 과정
 
   webpack, rollup, parcel, esbuild, wsc?, vite 등 여러 번들러 도구들이 있다.
-  그중에 이번 프로젝트에서는 번들러의 기본 조합이라고도 할 수 있는 webpack, tsc, babel 3가지를 활용한 TS 프로젝트 세팅을 진행하고 자 한다.
+  그중에 이번 프로젝트에서는 번들러의 기본 조합이라고도 할 수 있는 webpack, tsc, babel 3가지를 활용한 TS 프로젝트 세팅을 진행하고자 한다.
 
   
 - 환경 설정 방법
