@@ -1,0 +1,43 @@
+@import "../styles/variables.scss";
+
+.header-container {
+  background-color: $black;
+  color: #fff;
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 10px;
+  }
+  .header-left {
+    flex: 0 0 60px;
+  }
+  .button-back {
+    width: 30px;
+    height: 30px;
+    border: 1px solid yellow;
+    text-indent: -99999px;
+    background: #fff;
+    .icon-back {
+
+    }
+  }
+  .button-wrapper {
+    display: flex;
+    column-gap: 5px;
+    .button-like {
+      width: 30px;
+      height: 30px;
+      background-color: crimson;
+      text-indent: -99999px;
+    }
+    .button-cart {
+      width: 30px;
+      height: 30px;
+      background-color: purple;
+      text-indent: -99999px;
+    }
+  }
+}

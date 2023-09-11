@@ -1,5 +1,13 @@
 /* global 스타일 */
-.test {
-  line-height: 1.5;
-  color: red;
+
+/* ########################
+        공통 스타일
+######################## */
+
+/* area */
+.area {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  border: 1px solid red;
 }

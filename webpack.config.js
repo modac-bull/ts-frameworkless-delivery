@@ -19,6 +19,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
+        exclude: /styles\/global\.scss$/, // global.scss를 제외한 모든 SCSS 파일 대상
         use: [
           "style-loader",
           {
@@ -31,6 +32,10 @@ module.exports = {
           },
           "sass-loader",
         ],
+      },
+      {
+        test: /styles\/global\.scss$/, // 전역 스타일(global.scss)만 대상
+        use: ["style-loader", "css-loader", "sass-loader"],
       },
     ],
   },
