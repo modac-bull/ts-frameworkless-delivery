@@ -1,4 +1,4 @@
-import { header } from "@/components";
+import header from "@/components/header/header";
 import styles from "./cart.scss";
 
 export default function cartFoodPage(target: Element) {

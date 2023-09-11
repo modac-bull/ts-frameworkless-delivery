@@ -1,6 +1,6 @@
 import { Params } from "@/router/router";
 import styles from "./detail.scss";
-import { header } from "@/components";
+import header from "@/components/header/header";
 
 export default function storeDetailPage(target: Element, params?: Params) {
   console.log("params", params?.["storeIdx"]);
