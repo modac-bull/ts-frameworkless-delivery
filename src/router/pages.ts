@@ -1,25 +1,27 @@
 import homePage from "../pages/home";
-import storeDetailPage from "../pages/store/detail";
 import storeListPage from "../pages/store/list";
+import storeDetailPage from "../pages/store/detail";
+// import foodListPage from "../pages/food/list";
+import foodDetailPage from "../pages/food/detail";
 import { Params } from "./router";
 
 export default (container: Element) => {
   const home = () => {
     homePage(container);
   };
-
   const storeList = () => {
     storeListPage(container);
   };
-
   const storeDetail = (params?: Params) => {
-    // storeListPage(container);
     storeDetailPage(container, params);
   };
-
-  const food = async (params?: Params) => {
-    console.log(params);
+  const foodList = () => {
+    // foodListPage(container);
     container.textContent = "페이지 없음!";
+  };
+  const foodDetail = (params?: Params) => {
+    // foodListPage(container, params);
+    foodDetailPage(container, params);
   };
 
   const notFound = () => {
@@ -30,7 +32,8 @@ export default (container: Element) => {
     home,
     storeList,
     storeDetail,
-    food,
+    foodList,
+    foodDetail,
     notFound,
   };
 };

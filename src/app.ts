@@ -20,6 +20,8 @@ router
   .addRoute("/", pages.home)
   .addRoute("/store", pages.storeList)
   .addRoute("/store/:storeIdx", pages.storeDetail)
+  .addRoute("/food", pages.foodList)
+  .addRoute("/food/:foodIdx", pages.foodDetail)
   .setNotFound(pages.notFound)
   .init();
 
