@@ -12,7 +12,7 @@
     padding: 0 10px;
   }
   .header-left {
-    flex: 0 0 60px;
+    flex: 0 0 94px;
   }
   .button-back {
     width: 30px;
@@ -27,6 +27,12 @@
   .button-wrapper {
     display: flex;
     column-gap: 5px;
+    .button-home {
+      width: 30px;
+      height: 30px;
+      background-color: white;
+      text-indent: -99999px;
+    }
     .button-like {
       width: 30px;
       height: 30px;

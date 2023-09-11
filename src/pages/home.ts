@@ -1,6 +1,5 @@
-import { header } from "../components";
+import { header } from "@/components";
 import styles from "./home.scss";
-
 
 export default function homePage(target: Element) {
   let template = `
@@ -12,7 +11,7 @@ export default function homePage(target: Element) {
     </div>
   </div>
   `;
-  
+
   const headerElement = header({ title: "메인", hasBack: false });
   template = template.replace("{{__header__}}", headerElement);
 

@@ -20,8 +20,9 @@ export default function header({ title, hasBack }: Props) {
       </div>
       <h1>${title}</h1>
       <div class="${style["button-wrapper"]} ${style["header-right"]}">
-        <button class=${style["button-like"]}>찜 리스트</button>
-        <button class=${style["button-cart"]} >장바구니</button>
+        <button data-navigate="/" class=${style["button-home"]}>홈</button>
+        <button data-navigate="/like" class=${style["button-like"]}>찜 리스트</button>
+        <button data-navigate="/cart" class=${style["button-cart"]} >장바구니</button>
       </div>
     </div>
   </header>

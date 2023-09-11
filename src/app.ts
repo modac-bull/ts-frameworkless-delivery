@@ -22,9 +22,10 @@ router
   .addRoute("/store/:storeIdx", pages.storeDetail)
   .addRoute("/food", pages.foodList)
   .addRoute("/food/:foodIdx", pages.foodDetail)
+  .addRoute("/like", pages.likeList)
+  .addRoute("/cart", pages.cartList)
   .setNotFound(pages.notFound)
   .init();
-
 
 /* 
 이벤트 관리
@@ -35,7 +36,7 @@ container.addEventListener("click", (event) => {
   if (target.matches("#back-button")) {
     console.log("뒤로 버튼 클릭됨!");
     // 뒤로 가기 로직
-    history.back()
+    history.back();
     return;
   }
 

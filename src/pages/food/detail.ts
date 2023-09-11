@@ -1,4 +1,4 @@
-import { Params } from "../../router/router";
+import { Params } from "@/router/router";
 import styles from "./detail.scss";
 
 export default function foodDetailPage(target: Element, params?: Params) {
