@@ -5,9 +5,11 @@ export default function cartFoodPage(target: Element) {
   let template = `
   <div class='area'>
     {{__header__}}
+
     <div class=${styles["main"]}>
     <p class=${styles["main-title"]}>장바구니 페이지</p>
     </div>
+    
   </div>
   `;
 
