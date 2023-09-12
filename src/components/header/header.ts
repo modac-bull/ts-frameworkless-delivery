@@ -7,8 +7,8 @@ type Props = {
 
 export default function header({ title, hasBack }: Props) {
   const backButton = hasBack
-    ? `<button id="back-button" class=${style["button-back"]}>
-      <span class=${style["icon-back"]}>뒤로</span>
+    ? `<button class=${style["button-back"]} >
+      <i id="back-button" class="fa fa-chevron-left fa-lg"></i>
     </button>
   `
     : "";
@@ -20,9 +20,15 @@ export default function header({ title, hasBack }: Props) {
       </div>
       <h1>${title}</h1>
       <div class="${style["button-wrapper"]} ${style["header-right"]}">
-        <button data-navigate="/" class=${style["button-home"]}>홈</button>
-        <button data-navigate="/like" class=${style["button-like"]}>찜 리스트</button>
-        <button data-navigate="/cart" class=${style["button-cart"]} >장바구니</button>
+        <button data-navigate="/" class=${style["button-home"]}>
+          <i class="fa fa-home fa-lg"></i>
+        </button>
+        <button data-navigate="/like" class=${style["button-like"]}>
+          <i class="fa fa-heart fa-lg"></i>
+        </button>
+        <button data-navigate="/cart" class=${style["button-cart"]} >
+          <i class="fa fa-shopping-cart fa-lg"></i>
+        </button>
       </div>
     </div>
   </header>

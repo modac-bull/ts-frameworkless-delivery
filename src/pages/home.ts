@@ -19,7 +19,7 @@ export default async function homePage(target: Element) {
   template = template.replace("{{__header__}}", headerElement);
 
   const res = await getStoreListData();
-  const foodlistElement = res.map((store) => storeItem(store)).join(",");
+  const foodlistElement = res.map((store) => storeItem(store)).join("");
   template = template.replace("{{__food_list__}}", foodlistElement);
 
   target.innerHTML = template;
