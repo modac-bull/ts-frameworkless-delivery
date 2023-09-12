@@ -5,8 +5,8 @@ import header from "@/components/header/header";
 export default function storeDetailPage(target: Element, params?: Params) {
   console.log("params", params?.["storeIdx"]);
 
-  let template = `<div class='area'>
-    {{__header__}}
+  let template = `  {{__header__}}
+  <div class='area'>
 
     <div class=${styles["detail"]}>
       <h1 class=${styles["detail-title"]}>가게 상세 페이지입니다.</h1>

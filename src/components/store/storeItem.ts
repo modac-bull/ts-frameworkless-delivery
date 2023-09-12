@@ -1,21 +1,11 @@
-import { StoreItem } from "@/types/store";
+import { StoreItem } from "@/apis/store/types";
 import styles from "./storeItem.scss";
 
 /* 가게 목록 아이템 컴포넌트 */
 
-// type Props = {
-//   title: string;
-//   type: 0 | 1 | 2;
-//   delivery_time: [number, number];
-//   review_point: number;
-//   review_cnt: number;
-//   distance: number;
-//   price_range: [number, number];
-//   thumImgUrls: [string, string, string];
-// };
-
 export default function storeItem(data: StoreItem) {
   const {
+    id,
     title,
     delivery_time,
     review_point,
@@ -24,20 +14,31 @@ export default function storeItem(data: StoreItem) {
     price_range,
     thumImgUrls,
   } = data;
-  let template = `<div class=${styles["store-item"]}>
-    <h2>가게 이름 : ${title}</h2>
-    <p>별점 : ${review_point}</p>
-    <p>리뷰 카운트 : ${review_cnt}</p>
-    <p>거리 : ${distance}</p>
-    <p>가격범위 : ${price_range[0]} ~ ${price_range[1]}</p>
-    <p>예상 배달 시간 : ${delivery_time[0]} ~ ${delivery_time[1]}</p>
-    <div>
-      <div>
+  let template = `<div  data-navigate=/store/${id} class=${
+    styles["store-item"]
+  }>
+    <div class=${styles["img-wrapper"]}>
+      <div class=${styles["left"]}>
         <img src=${thumImgUrls[0]} />
       </div>
-      <div>
+      <div class=${styles["right"]}>
         <img src=${thumImgUrls[1]} />
         <img src=${thumImgUrls[2]} />
+      </div>
+    </div>
+    <div class=${styles["info-wrapper"]}>
+      <div class=${styles["left"]}>
+        <div class=${styles["title-wrapper"]}>
+          <h2 class=${styles["title"]}>${title}</h2>
+        </div>
+        <div class=${styles["description"]}>
+          <span class=${styles['reviews']}>${review_point}(${review_cnt})</span>
+          <span> ${distance}km</span>
+          <span> ${price_range[0].toLocaleString()}원 ~ ${price_range[1].toLocaleString()}원</span>
+        </div>
+      </div>
+      <div class=${styles["right"]}>
+        <p> ${delivery_time[0]} ~ ${delivery_time[1]} 분</p>
       </div>
     </div>
   </div>

@@ -1,4 +1,5 @@
 export interface StoreItem {
+  id: number;
   title: string;
   type: 0 | 1 | 2;
   delivery_time: [number, number];

@@ -1,12 +1,12 @@
 import header from "@/components/header/header";
 import styles from "./home.scss";
 import storeItem from "@/components/store/storeItem";
-import { StoreItem } from "@/types/store";
+import { StoreItem } from "@/apis/store/types";
 
 export default function homePage(target: Element) {
   let template = `
+  {{__header__}}
   <div class='area'>
-    {{__header__}}
     <div class=${styles["main"]}>
       <ul>
         {{__food_list__}}
@@ -25,7 +25,8 @@ export default function homePage(target: Element) {
 
   const DUMMY_STORE: StoreItem[] = [
     {
-      title: "가게이름",
+      id: 1,
+      title: "가게이름 가게이름 가게이름 가게이름 가게이름",
       type: 0,
       delivery_time: [15, 20],
       review_point: 5.0,

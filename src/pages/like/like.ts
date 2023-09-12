@@ -3,8 +3,8 @@ import styles from "./like.scss";
 
 export default function likeStorePage(target: Element) {
   let template = `
+  {{__header__}}
   <div class='area'>
-    {{__header__}}
     <div class=${styles["main"]}>
     <p class=${styles["main-title"]}>좋아요 페이지</p>
     </div>

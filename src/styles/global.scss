@@ -1,3 +1,4 @@
+@import "/src/styles/variables.scss";
 /* global 스타일 */
 
 /* ########################
@@ -9,4 +10,5 @@
   width: 100%;
   max-width: 768px;
   margin: 0 auto;
+  padding-top: $header-height
 }

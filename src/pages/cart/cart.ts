@@ -3,8 +3,8 @@ import styles from "./cart.scss";
 
 export default function cartFoodPage(target: Element) {
   let template = `
+  {{__header__}}
   <div class='area'>
-    {{__header__}}
 
     <div class=${styles["main"]}>
     <p class=${styles["main-title"]}>장바구니 페이지</p>
