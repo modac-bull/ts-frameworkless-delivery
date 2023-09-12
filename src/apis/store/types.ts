@@ -9,3 +9,9 @@ export interface StoreItem {
   delivery_price_range: [number, number];
   thumImgUrls: [string, string, string];
 }
+
+export interface StoreInfo extends StoreItem {
+  minimum_price: number;
+  comments: number;
+  like_cnt: number;
+}
