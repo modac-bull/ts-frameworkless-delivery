@@ -11,7 +11,7 @@ export default function storeItem(data: StoreItem) {
     review_point,
     review_cnt,
     distance,
-    price_range,
+    delivery_price_range,
     thumImgUrls,
   } = data;
   let template = `<div  data-navigate=/store/${id} class=${
@@ -32,9 +32,12 @@ export default function storeItem(data: StoreItem) {
           <h2 class=${styles["title"]}>${title}</h2>
         </div>
         <div class=${styles["description"]}>
-          <span class=${styles['reviews']}>${review_point}(${review_cnt})</span>
+          <span class=${styles["reviews"]}>
+            <i class="fa fa-star fa-lg"></i>
+            ${review_point}(${review_cnt.toLocaleString()})
+          </span>
           <span> ${distance}km</span>
-          <span> ${price_range[0].toLocaleString()}원 ~ ${price_range[1].toLocaleString()}원</span>
+          <span> ${delivery_price_range[0].toLocaleString()}원 ~ ${delivery_price_range[1].toLocaleString()}원</span>
         </div>
       </div>
       <div class=${styles["right"]}>

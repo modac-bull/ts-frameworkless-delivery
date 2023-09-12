@@ -6,6 +6,6 @@ export interface StoreItem {
   review_point: number;
   review_cnt: number;
   distance: number;
-  price_range: [number, number];
+  delivery_price_range: [number, number];
   thumImgUrls: [string, string, string];
 }

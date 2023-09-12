@@ -37,20 +37,28 @@
     width: calc(100% - 80px);
     .description {
       display: flex;
-      column-gap : 4px;
+      column-gap: 2px;
       font-size: 14px;
       color: #666;
+      margin-top: 3px;
+      span {
+        &:not(:nth-last-of-type(1)) {
+          &:after {
+            content: "∙";
+            display: inline-block;
+            margin-left: 2px;
+          }
+        }
+      }
     }
     .reviews {
       display: flex;
       align-items: center;
       // 별 아이콘
-      &:before {
-        content: "";
-        display: block;
-        width: 15px;
-        height: 15px;
-        border: 1px solid green; //임시
+      i {
+        margin-right: 3px;
+        font-size: 13px;
+        color: orange;
       }
     }
   }
