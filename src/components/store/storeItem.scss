@@ -1,4 +1,7 @@
 .store-item {
+  &:not(:last-child) {
+    margin-bottom: 15px;
+  }
 }
 
 .img-wrapper {
