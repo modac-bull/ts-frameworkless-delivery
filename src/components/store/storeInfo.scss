@@ -58,4 +58,19 @@
       }
     }
   }
+  .deliver-info {
+    padding: 20px 30px;
+    .text-info {
+      display: flex;
+      font-size: 14px;
+      color: #666;
+      &:not(:last-of-type) {
+        margin-bottom: 10px;
+      }
+      dt {
+        flex: 0 0 90px;
+        width: 90px;
+      }
+    }
+  }
 }

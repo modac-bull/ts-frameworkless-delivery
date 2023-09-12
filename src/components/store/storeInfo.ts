@@ -40,10 +40,24 @@ export default function storeInfo(data: StoreInfo) {
         <i class="fa fa-star fa-lg"></i>
         ${review_point} (${review_cnt.toLocaleString()})
       </span>
-      <div class=${styles['review-info']}>
+      <div class=${styles["review-info"]}>
         <p> 최근리뷰 ${review_cnt.toLocaleString()}</p>
         <p> 최근사장님댓글 ${comments.toLocaleString()}</p>
       </div>
+    </div>
+    <div class=${styles["deliver-info"]}>
+      <dl class=${styles['text-info']}>
+        <dt>최소주문금액</dt>
+        <dd>${minimum_price.toLocaleString()}원</dd>
+      </dl>
+      <dl class=${styles['text-info']}>
+        <dt>결제 방법</dt>
+        <dd>바로결제, 만나서결제, 예약가능</dd>
+      </dl>
+      <dl class=${styles['text-info']}>
+        <dt>배달시간</dt>
+        <dd>${delivery_time[0]}~${delivery_time[1]}분 소요 예상</dd>
+      </dl>
     </div>
   
   </div>
