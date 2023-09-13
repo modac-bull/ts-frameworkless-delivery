@@ -10,7 +10,7 @@ export default async function storeDetailPage(
 ) {
   const idx = params?.["storeIdx"]!;
 
-  let template = `  {{__header__}}
+  let template = `{{__header__}}
   <div class='area'>
     {{__store_info__}}
 

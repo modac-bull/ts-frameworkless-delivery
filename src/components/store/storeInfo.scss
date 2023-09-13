@@ -10,6 +10,15 @@
       width: 100%;
       transform: translate(-50%, -50%);
     }
+    .btn-like {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      color: #fff;
+      &.active {
+        color: orangered;
+      }
+    }
   }
   .info-wrap {
     position: relative;
