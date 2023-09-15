@@ -14,6 +14,7 @@ export interface FoodDetailItem extends FoodListlItem {
 
 // 음식 옵션 타입
 export interface FoodOptionItem {
+  id: number;
   title: string;
   price: number;
 }

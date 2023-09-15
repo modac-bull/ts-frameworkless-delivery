@@ -142,6 +142,10 @@ export const DUMMY_FOOD_DETAIL: {
     title: "[구성1위] 배부른 민지 set",
     desc: "떡볶이 + 커피 + 토스트 ",
     price: 11500,
+    options: [
+      { id: 1, title: "옵션A", price: 1000 },
+      { id: 2, title: "옵션B", price: 2000 },
+    ],
   },
   2: {
     id: 2,
