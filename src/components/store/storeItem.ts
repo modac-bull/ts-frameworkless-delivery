@@ -14,7 +14,7 @@ export default function storeItem(data: StoreItem) {
     delivery_price_range,
     thumImgUrls,
   } = data;
-  let template = `<div  data-navigate=/store/${id} class=${
+  let template = `<div data-navigate=/store/${id} class=${
     styles["store-item"]
   }>
     <div class=${styles["img-wrapper"]}>

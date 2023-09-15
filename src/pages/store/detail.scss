@@ -1,11 +1,9 @@
-.detail {
-  border: 1px solid black;
-  padding: 20px 0;
-  .detail-title {
-    font-size: 20px;
-    text-align: center;
-  }
-  .number { 
-    text-align: center;
+.food-list-container {
+  padding: 0 20px;
+  .title-menu {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 25px;
+    padding-bottom: 20px;
   }
 }
