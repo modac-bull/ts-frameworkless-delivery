@@ -26,19 +26,3 @@ router
   .addRoute("/cart", pages.cartList)
   .setNotFound(pages.notFound)
   .init();
-
-/* 
-이벤트 관리
-*/
-container.addEventListener("click", (event) => {
-  const target = event.target as HTMLElement;
-
-  if (target.matches("#back-button")) {
-    console.log("뒤로 버튼 클릭됨!");
-    // 뒤로 가기 로직
-    history.back();
-    return;
-  }
-
-  // 다른 버튼이나 요소에 대한 이벤트도 여기서 처리
-});
