@@ -5,6 +5,8 @@ type Props = {
   hasBack?: boolean;
 };
 
+let isEventListenerAdded = false;
+
 export default function header({ title, hasBack }: Props) {
   const backButton = hasBack
     ? `<button class=${style["button-back"]} >
@@ -38,18 +40,19 @@ export default function header({ title, hasBack }: Props) {
   TODO
   - 이벤트 관리, 유틸함수로 관리할 수 있을지 확인
   */
-  window.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
-
-    if (target.matches("#back-button")) {
-      console.log("뒤로 버튼 클릭됨!");
-      // 뒤로 가기 로직
-      history.back();
-      return;
-    }
-
-    // 다른 버튼이나 요소에 대한 이벤트도 여기서 처리
-  });
+  if (!isEventListenerAdded) {
+    window.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      // #back-button 또는 그의 상위 요소 중 #back-button 요소를 가지고 있는 경우
+      if (target.closest("#back-button")) {
+        console.log("뒤로 버튼 클릭됨!");
+        // 뒤로 가기 로직
+        history.back();
+        return;
+      }
+    });
+    isEventListenerAdded = true;
+  }
 
   return template;
 }

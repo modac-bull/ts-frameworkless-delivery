@@ -12,7 +12,7 @@ export interface FoodDetailItem extends FoodListlItem {
   options?: FoodOptionItem[];
 }
 
-// 음식 옵션 타입F
+// 음식 옵션 타입
 export interface FoodOptionItem {
   title: string;
   price: number;
