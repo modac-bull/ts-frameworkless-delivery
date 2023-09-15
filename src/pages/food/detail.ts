@@ -11,10 +11,7 @@ export default async function foodDetailPage(target: Element, params?: Params) {
   let template = `{{__header__}}
   {{__food_info__}}
 
-  <div class=${styles["option-container"]}>
-    <p class=${styles["title-option"]}>추가선택</p>
-    {{__food_options__}}
-  </div>
+  {{__food_options__}}
 
   <div class='divider-st1'></div>
   `;
@@ -27,12 +24,17 @@ export default async function foodDetailPage(target: Element, params?: Params) {
     const foodInfoElement = foodInfo(foodDetailRes);
     template = template.replace("{{__food_info__}}", foodInfoElement);
 
-    const optionInfoElement = foodDetailRes.options
-      ?.map((option) => foodOption(option))
-      .join("");
+    const optionInfoElement =
+      foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
+      "<p>옵션이 없습니다.</p>";
+
     template = template.replace(
       "{{__food_options__}}",
-      optionInfoElement ?? ""
+
+      `<div class=${styles["option-container"]}>
+        <p class=${styles["title-option"]}>추가선택</p>
+        ${optionInfoElement}
+      </div>` ?? ""
     );
 
     target.innerHTML = template;
