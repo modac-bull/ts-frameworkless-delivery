@@ -11,6 +11,7 @@ let isEventListenerAdded = false;
 
 export default async function foodDetailPage(target: Element, params?: Params) {
   const idx = params?.["foodIdx"]!;
+  console.log("idx", idx);
   let template = `{{__header__}}
   {{__food_info__}}
 
@@ -69,6 +70,7 @@ export default async function foodDetailPage(target: Element, params?: Params) {
       const target = event.target as HTMLInputElement;
       const targetId = target?.getAttribute("id") ?? "";
 
+      console.log("selectedMenuInfo", selectedMenuInfo);
       if (target.closest("#price-option") && target.type === "checkbox") {
         if (target.checked) {
           selectedPrice += Number(target?.value);
@@ -99,7 +101,10 @@ export default async function foodDetailPage(target: Element, params?: Params) {
       if (target.closest("#btn-add-cart")) {
         alert("장바구니에 담았습니다.");
 
-        addToCart(selectedMenuInfo);
+        addToCart({
+          ...selectedMenuInfo,
+          foodIdx: idx,
+        });
       }
 
       // 장바구니 추가
@@ -113,7 +118,8 @@ export default async function foodDetailPage(target: Element, params?: Params) {
         );
         if (
           existingItem &&
-          existingItem.optionIdx.join('') === selectedMenuInfo.optionIdx.join('')
+          existingItem.optionIdx.join("") ===
+            selectedMenuInfo.optionIdx.join("")
         ) {
           existingItem.quantity += 1; // 수량 증가
         } else {

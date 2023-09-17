@@ -2,9 +2,8 @@ import styles from "./cartItem.scss";
 import { FoodDetailItem } from "@/apis/food/types";
 
 /* 가게 목록 아이템 컴포넌트 */
-
 export default function cartItem(data: FoodDetailItem, optionIdx: string[]) {
-  const { title, desc, options, price, thumbImg } = data;
+  const { id, title, desc, options, price, thumbImg } = data;
 
   const selectedOption =
     options &&
@@ -21,11 +20,15 @@ export default function cartItem(data: FoodDetailItem, optionIdx: string[]) {
       <img src=${thumbImg}/>
     </div>
     <div class=${styles["info-wrapper"]}>
+
+      <button class='${styles["btn-close"]}' >
+        <i class="fa fa-times fa-lg  remove-cart-button" data-id=${id}></i>
+      </button>
       <h3 class=${styles["title-food"]}>${title}</h3>
       <ul class=${styles["desc-wrap"]}>
         <li class=${styles["text-price"]}>가격 : ${
-          price?.toLocaleString() ?? 0
-        }원</li>
+    price?.toLocaleString() ?? 0
+  }원</li>
         <li class=${styles["text-desc"]}>${desc}</li>
         <li class=${
           styles["text-options"]
@@ -34,5 +37,6 @@ export default function cartItem(data: FoodDetailItem, optionIdx: string[]) {
     </div>
   </div>
   `;
+
   return template;
 }
