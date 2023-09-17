@@ -5,13 +5,11 @@ import { getFoodDetailByIdx } from "@/apis/food/food";
 import foodInfo from "@/components/food/foodInfo";
 import foodOption from "@/components/food/foodOption";
 import foodPrice from "@/components/food/foodPrice";
+import { selectedFoodInfo } from "@/apis/food/types";
 
 let isEventListenerAdded = false;
 
-type selectedFoodInfo = { foodIdx: string; optionIdx: string[] };
-
 export default async function foodDetailPage(target: Element, params?: Params) {
-  console.log("params", params?.["foodIdx"]);
   const idx = params?.["foodIdx"]!;
   let template = `{{__header__}}
   {{__food_info__}}
@@ -29,6 +27,7 @@ export default async function foodDetailPage(target: Element, params?: Params) {
   let selectedMenuInfo: selectedFoodInfo = {
     foodIdx: idx,
     optionIdx: [],
+    quantity: 0,
   };
 
   try {
@@ -72,16 +71,13 @@ export default async function foodDetailPage(target: Element, params?: Params) {
 
       if (target.closest("#price-option") && target.type === "checkbox") {
         if (target.checked) {
-          console.log("체크됨", target);
           selectedPrice += Number(target?.value);
 
           selectedMenuInfo.optionIdx = [
             ...selectedMenuInfo.optionIdx,
             targetId,
           ];
-          console.log("selected", selectedMenuInfo);
         } else {
-          console.log("체크 해제됨", target);
           selectedPrice -= Number(target?.value); // 체크가 해제된 경우 값을 감소
 
           // id 값을 배열에서 제거
@@ -89,7 +85,6 @@ export default async function foodDetailPage(target: Element, params?: Params) {
           if (index > -1) {
             selectedMenuInfo.optionIdx.splice(index, 1);
           }
-          console.log("selected", selectedMenuInfo);
         }
         // 가격 정보 업데이트
         const totalPriceElement = document.getElementById("total-price");
@@ -101,15 +96,31 @@ export default async function foodDetailPage(target: Element, params?: Params) {
     });
     window.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
-      // #back-button 또는 그의 상위 요소 중 #back-button 요소를 가지고 있는 경우
       if (target.closest("#btn-add-cart")) {
         alert("장바구니에 담았습니다.");
+
         addToCart(selectedMenuInfo);
       }
 
       // 장바구니 추가
       function addToCart(selectedMenuInfo: selectedFoodInfo) {
-        localStorage.setItem("cart", JSON.stringify(selectedMenuInfo));
+        // 로컬 스토리지에서 기존 장바구니 데이터
+        let cart: selectedFoodInfo[] =
+          JSON.parse(localStorage.getItem("cart") as string) || [];
+
+        const existingItem = cart.find(
+          (item: selectedFoodInfo) => item.foodIdx === selectedMenuInfo.foodIdx
+        );
+        if (
+          existingItem &&
+          existingItem.optionIdx.join('') === selectedMenuInfo.optionIdx.join('')
+        ) {
+          existingItem.quantity += 1; // 수량 증가
+        } else {
+          selectedMenuInfo.quantity = 1; // 새로운 아이템이라면 수량을 1로 설정
+          cart.push(selectedMenuInfo);
+        }
+        localStorage.setItem("cart", JSON.stringify(cart));
       }
     });
     isEventListenerAdded = true;

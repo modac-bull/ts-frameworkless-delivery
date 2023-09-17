@@ -45,7 +45,6 @@ export default function header({ title, hasBack }: Props) {
       const target = event.target as HTMLElement;
       // #back-button 또는 그의 상위 요소 중 #back-button 요소를 가지고 있는 경우
       if (target.closest("#back-button")) {
-        console.log("뒤로 버튼 클릭됨!");
         // 뒤로 가기 로직
         history.back();
         return;

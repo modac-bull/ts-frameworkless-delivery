@@ -18,3 +18,10 @@ export interface FoodOptionItem {
   title: string;
   price: number;
 }
+
+// 장바구니 음식 데이터
+export interface selectedFoodInfo {
+  foodIdx: string;
+  optionIdx: string[];
+  quantity : number;
+}

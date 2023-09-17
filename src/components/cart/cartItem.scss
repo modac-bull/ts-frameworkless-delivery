@@ -1,0 +1,41 @@
+.cart-item-wrapper {
+  display: flex;
+  &:not(:last-child) {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ededed;
+  }
+  .img-wrapper {
+    flex: 0 0 30%;
+    width: 30%;
+    aspect-ratio: 1 /1;
+    overflow: hidden;
+    border-radius: 5px;
+  }
+  .info-wrapper {
+    padding-left: 30px;
+    .title-food {
+      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .desc-wrap {
+      color: #999;
+      li {
+        margin: 4px 0;
+      }
+      .text-desc {
+        font-size: 15px;
+      }
+      .text-price {
+        font-size: 15px;
+      }
+      .text-options {
+        font-size: 15px;
+        span {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}

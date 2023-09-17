@@ -4,31 +4,31 @@ import styles from "./storeInfo.scss";
 /* 가게 상세 상단 정보 */
 export default function storeInfo(data: StoreInfo) {
   const {
-    id,
+    // id,
     title,
     delivery_time,
     review_point,
     review_cnt,
-    distance,
-    delivery_price_range,
+    // distance,
+    // delivery_price_range,
     thumImgUrls,
     minimum_price,
     comments,
-    like_cnt,
+    // like_cnt,
   } = data;
-  console.log(
-    id,
-    title,
-    delivery_time,
-    review_point,
-    review_cnt,
-    distance,
-    delivery_price_range,
-    thumImgUrls,
-    minimum_price,
-    comments,
-    like_cnt
-  );
+  // console.log(
+  //   id,
+  //   title,
+  //   delivery_time,
+  //   review_point,
+  //   review_cnt,
+  //   distance,
+  //   delivery_price_range,
+  //   thumImgUrls,
+  //   minimum_price,
+  //   comments,
+  //   like_cnt
+  // );
 
   // 찜,좋아요 조건 임시
   const isLiked = true;
