@@ -3,28 +3,21 @@
 import HomePage from "@/pages/home";
 import StoreDetailPage from "@/pages/store/detail";
 import { Params } from "./router";
+import FoodDetailPage from "@/pages/food/detail";
 
 export default (container: string) => {
   const home = () => {
     const homePage = new HomePage(container);
     homePage.render();
   };
-  // const storeList = () => {
-  //   storeListPage(container);
-  // };
   const storeDetail = (params?: Params) => {
-    const storeDealPage = new StoreDetailPage(container, params);
-    storeDealPage.render();
+    const storeDetalPage = new StoreDetailPage(container, params);
+    storeDetalPage.render();
   };
-  // const foodList = () => {
-  //   // foodListPage(container);
-  //   // 별도의 페이지로 만들 필요 없음
-  //   container.textContent = "페이지 없음!";
-  // };
-  // const foodDetail = (params?: Params) => {
-  //   // foodListPage(container, params);
-  //   foodDetailPage(container, params);
-  // };
+  const foodDetail = (params?: Params) => {
+    const foodDetailPage = new FoodDetailPage(container, params)
+    foodDetailPage.render()
+  };
   // const likeList = () => {
   //   likeStorePage(container);
   // };
@@ -41,7 +34,7 @@ export default (container: string) => {
     // storeList,
     storeDetail,
     // foodList,
-    // foodDetail,
+    foodDetail,
     // likeList,
     // cartList,
     notFound,

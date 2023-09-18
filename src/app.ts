@@ -18,9 +18,9 @@ const router = new Router();
 router
   .addRoute("/", pages.home)
   .addRoute("/store/:storeIdx", pages.storeDetail)
+  .addRoute("/food/:foodIdx", pages.foodDetail)
   // .addRoute("/store", pages.storeList)
   // .addRoute("/food", pages.foodList)
-  // .addRoute("/food/:foodIdx", pages.foodDetail)
   // .addRoute("/like", pages.likeList)
   // .addRoute("/cart", pages.cartList)
   .setNotFound(pages.notFound)
