@@ -17,8 +17,8 @@ init() 메서드로 라우터 시작
 const router = new Router();
 router
   .addRoute("/", pages.home)
+  .addRoute("/store/:storeIdx", pages.storeDetail)
   // .addRoute("/store", pages.storeList)
-  // .addRoute("/store/:storeIdx", pages.storeDetail)
   // .addRoute("/food", pages.foodList)
   // .addRoute("/food/:foodIdx", pages.foodDetail)
   // .addRoute("/like", pages.likeList)

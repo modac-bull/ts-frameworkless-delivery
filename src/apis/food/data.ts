@@ -1,7 +1,7 @@
 import { FoodDetailItem, FoodListlItem } from "./types";
 
 // 음식 더미 데이터
-export const DUMMY_FOOD_LIST: { [key: number]: FoodListlItem[] } = {
+export const DUMMY_FOOD_LIST: { [key: string]: FoodListlItem[] } = {
   1: [
     {
       id: 1,

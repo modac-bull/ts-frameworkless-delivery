@@ -24,5 +24,5 @@ export default abstract class Page {
     this.renderTemplate = this.template;
   }
 
-  abstract render(): void;
+  abstract render(): Promise<void>;
 }
