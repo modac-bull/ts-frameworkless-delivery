@@ -4,6 +4,7 @@ import HomePage from "@/pages/home";
 import StoreDetailPage from "@/pages/store/detail";
 import { Params } from "./router";
 import FoodDetailPage from "@/pages/food/detail";
+import CartPage from "@/pages/cart/cart";
 
 export default (container: string) => {
   const home = () => {
@@ -15,15 +16,17 @@ export default (container: string) => {
     storeDetalPage.render();
   };
   const foodDetail = (params?: Params) => {
-    const foodDetailPage = new FoodDetailPage(container, params)
-    foodDetailPage.render()
+    const foodDetailPage = new FoodDetailPage(container, params);
+    foodDetailPage.render();
   };
   // const likeList = () => {
   //   likeStorePage(container);
   // };
-  // const cartList = () => {
-  //   cartFoodPage(container);
-  // };
+  const cartList = () => {
+    // cartFoodPage(container);
+    const cartPage = new CartPage(container);
+    cartPage.render();
+  };
 
   const notFound = () => {
     // container.textContent = "페이지 없음!";
@@ -36,7 +39,7 @@ export default (container: string) => {
     // foodList,
     foodDetail,
     // likeList,
-    // cartList,
+    cartList,
     notFound,
   };
 };

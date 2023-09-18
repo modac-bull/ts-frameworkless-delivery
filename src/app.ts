@@ -19,9 +19,9 @@ router
   .addRoute("/", pages.home)
   .addRoute("/store/:storeIdx", pages.storeDetail)
   .addRoute("/food/:foodIdx", pages.foodDetail)
+  .addRoute("/cart", pages.cartList)
   // .addRoute("/store", pages.storeList)
   // .addRoute("/food", pages.foodList)
   // .addRoute("/like", pages.likeList)
-  // .addRoute("/cart", pages.cartList)
   .setNotFound(pages.notFound)
   .init();
