@@ -3,9 +3,8 @@ import "./styles/global.scss";
 
 import createPages from "./router/pages";
 import Router from "./router/router";
-const container = document.querySelector("#app") as Element;
 
-const pages = createPages(container);
+const pages = createPages("app");
 
 /* 
 라우트 설정
@@ -18,11 +17,11 @@ init() 메서드로 라우터 시작
 const router = new Router();
 router
   .addRoute("/", pages.home)
-  .addRoute("/store", pages.storeList)
-  .addRoute("/store/:storeIdx", pages.storeDetail)
-  .addRoute("/food", pages.foodList)
-  .addRoute("/food/:foodIdx", pages.foodDetail)
-  .addRoute("/like", pages.likeList)
-  .addRoute("/cart", pages.cartList)
+  // .addRoute("/store", pages.storeList)
+  // .addRoute("/store/:storeIdx", pages.storeDetail)
+  // .addRoute("/food", pages.foodList)
+  // .addRoute("/food/:foodIdx", pages.foodDetail)
+  // .addRoute("/like", pages.likeList)
+  // .addRoute("/cart", pages.cartList)
   .setNotFound(pages.notFound)
   .init();
