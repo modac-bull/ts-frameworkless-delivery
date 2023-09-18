@@ -1,0 +1,17 @@
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // height: 60px;
+  background-color: #fff;
+  border-top: 1px solid #ededed;
+  padding: 20px 10px;
+}
+.button-primary {
+  background-color: black;
+  padding: 20px 0;
+  color: #fff;
+  width: 100%;
+  border-radius: 5px;
+}

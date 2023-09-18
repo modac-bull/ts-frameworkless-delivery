@@ -1,0 +1,33 @@
+.food-item-wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 25px;
+  &:not(:last-child) {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #ededed;
+  }
+  .txt-wrap {
+    flex: 0 0 60%;
+    width: 60%;
+    .title-food {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .desc-food {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #666;
+    }
+    .price-food {
+      margin-top: 8px;
+      font-size: 16px;
+    }
+  }
+  .img-wrap {
+    flex: 0 0 30%;
+    width: 30%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 5px;
+  }
+}

@@ -1,0 +1,21 @@
+@import "/src/styles/variables.scss";
+/* global 스타일 */
+
+/* ########################
+        공통 스타일
+######################## */
+
+/* area */
+.area {
+  width: 100%;
+  max-width: $max-width ;
+  margin: 0 auto;
+  padding-top: $header-height
+}
+
+.divider-st1 {
+  width: 100%;
+  height: 8px;
+  background-color: #f4f4f4;
+  border-top: 1px solid #ededed;
+}
