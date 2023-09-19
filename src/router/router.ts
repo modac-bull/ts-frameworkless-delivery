@@ -44,16 +44,22 @@ class Router {
   }
 
   /* 
-  현재 URL을 확인하고 일치하는 라우트의 콜백을 실행
-  일치하는 라우트 없을 경우 notFound 콜백 실행
-  TODO
-  - 페이지 클래스 인스턴스 받아와서 인스턴스.render 호출되도록 처리하기
+  현재 URL을 확인하고 일치하는 라우트의 페이지 인스턴스 render 메서드 수행
+  - 이벤트 리스너 해제 코드 추가
   */
   checkRoutes() {
     const { pathname } = window.location;
     if (this.lastPathname === pathname) {
       return;
     }
+    // 현재 활성화된 페이지의 이벤트 리스너 해제
+    const currentActiveRoute = this.routes.find((route) =>
+      route.testRegExp.test(this.lastPathname)
+    );
+    if (currentActiveRoute) {
+      currentActiveRoute.page.unbindEvents();
+    }
+
     this.lastPathname = pathname;
     const currentRoute = this.routes.find((route) => {
       const { testRegExp } = route;
@@ -64,7 +70,6 @@ class Router {
       this.notFound();
       return;
     }
-    console.log("currentRoute", currentRoute);
 
     const urlParams = extractUrlParams(currentRoute, pathname);
     currentRoute.page.params = urlParams;
@@ -96,7 +101,6 @@ class Router {
   /* 주어진 경로로 이동하고 해당 라우트의 콜백을 실행 */
   navigate(path: string) {
     window.history.pushState(null, "", path);
-    console.log("currentPage?", this.routes);
     this.checkRoutes();
   }
 

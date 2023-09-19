@@ -31,6 +31,7 @@ export default class CartPage extends Page {
       this.setTemplateData("cart_item", await this.renderCartElement());
 
       this.updatePage();
+      this.bindEvents();
     } catch {}
   }
 
@@ -41,12 +42,43 @@ export default class CartPage extends Page {
 
     const cartItemData = await Promise.all(
       getCartItemData.map((cart: selectedFoodInfo) =>
-        getFoodDetailByIdx(Number(cart.foodIdx))
+        getFoodDetailByIdx(Number(cart.foodId))
       )
     );
     const cartItemElement = cartItemData
-      .map((cart, idx) => cartItem(cart, getCartItemData[idx].optionIdx))
+      .map((cart, idx) => cartItem(cart, getCartItemData[idx].optionIds))
       .join("");
     return cartItemElement;
+  }
+
+  eventMap() {
+    return {
+      "click #btn-remove-cart": this.buttonClickHandler,
+    };
+  }
+
+  // 장바구니 추가 로직
+  buttonClickHandler(event: Event) {
+    const target = event.target as HTMLElement;
+    const selectedFoodId = target.getAttribute("data-id");
+
+    if (target.closest("#btn-remove-cart")) {
+      alert("장바구니에서 제거했습니다..");
+      removeFromCart(selectedFoodId);
+
+      // 장바구니 제거
+      function removeFromCart(menuId: string | null) {
+        if (!menuId) return;
+        let cart: selectedFoodInfo[] =
+          JSON.parse(localStorage.getItem("cart") as string) || [];
+
+        // 아이템 제거
+        cart = cart.filter((item) => item.foodId !== menuId);
+
+        // 변경된 장바구니 데이터를 다시 로컬 스토리지에 저장합니다.
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
+    }
+    this.render();
   }
 }

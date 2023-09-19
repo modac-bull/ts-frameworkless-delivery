@@ -21,7 +21,6 @@ export interface FoodOptionItem {
 
 // 장바구니 음식 데이터
 export interface selectedFoodInfo {
-  foodIdx: string;
-  optionIdx: string[];
-  quantity : number;
+  foodId: string | null;
+  optionIds: string[];
 }

@@ -6,6 +6,7 @@ import foodInfo from "@/components/food/foodInfo";
 import foodOption from "@/components/food/foodOption";
 import foodPrice from "@/components/food/foodPrice";
 import Page from "@/core/Page";
+import { selectedFoodInfo } from "@/apis/food/types";
 
 const template = `{{__header__}}
   <div class='area'>
@@ -19,17 +20,28 @@ const template = `{{__header__}}
   </div>
   `;
 export default class FoodDetailPage extends Page {
+  foodId: string | null;
+  optionId: string[];
+  totalPrice: number;
+
   constructor(containerId: string) {
     super(containerId, template);
+    this.foodId = "";
+    this.optionId = [];
+    this.totalPrice = 0;
   }
 
   async render(): Promise<void> {
     const idx = this.params?.["foodIdx"]! as string;
+    this.foodId = idx;
+    this.optionId = [];
     try {
       const headerElement = header({ title: "음식 상세", hasBack: true });
       this.setTemplateData("header", headerElement);
 
       const foodDetailRes = await getFoodDetailByIdx(Number(idx));
+      this.totalPrice = foodDetailRes.price;
+
       const foodInfoElement = foodInfo(foodDetailRes);
       this.setTemplateData("food_info", foodInfoElement);
 
@@ -45,13 +57,62 @@ export default class FoodDetailPage extends Page {
       );
 
       /* TODO = 가격 갱신 로직 추가 */
-      const SELECTED_PRICE = 1000;
+      const SELECTED_PRICE = this.totalPrice;
       const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
       this.setTemplateData("bottom_sheet", bottomSheetElement);
 
       this.updatePage();
+      this.bindEvents();
     } catch {
       throw "데이터 없음";
+    }
+  }
+
+  eventMap() {
+    return {
+      "click #btn-add-cart": this.buttonClickHandler,
+      "change #price-option": this.inputChangeHandler,
+    };
+  }
+
+  // 장바구니 추가 로직
+  buttonClickHandler() {
+    // 로컬 스토리지에 추가
+    const selectedInfo: selectedFoodInfo = {
+      foodId: null,
+      optionIds: [],
+    };
+
+    let cart = JSON.parse(localStorage.getItem("cart") as string) || [];
+    selectedInfo.foodId = this.foodId;
+    selectedInfo.optionIds = this.optionId;
+    cart.push(selectedInfo);
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  // 옵션 정보 업데이트
+  inputChangeHandler(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (
+      event.type === "change" &&
+      target.closest("#price-option") &&
+      target.type === "checkbox"
+    ) {
+      if (target.checked) {
+        this.totalPrice += Number(target.value);
+        this.optionId.push(target.id); // 옵션 ID 추가
+      } else {
+        this.totalPrice -= Number(target.value);
+        const index = this.optionId.indexOf(target.id);
+        if (index > -1) {
+          this.optionId.splice(index, 1); // 옵션 ID 제거
+        }
+      }
+      // 가격 정보 업데이트
+      const totalPriceElement = document.getElementById("total-price");
+      if (totalPriceElement) {
+        totalPriceElement.textContent = this.totalPrice.toLocaleString();
+      }
     }
   }
 }
