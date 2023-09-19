@@ -1,4 +1,4 @@
-import { Params } from "@/router/router";
+// import { Params } from "@/router/router";
 import header from "@/components/header/header";
 import styles from "./detail.scss";
 import { getFoodDetailByIdx } from "@/apis/food/food";
@@ -17,17 +17,11 @@ const template = `{{__header__}}
   {{__bottom_sheet__}}
   `;
 export default class FoodDetailPage extends Page {
-  params: Params | null;
-
-  constructor(containerId: string, params?: Params) {
+  constructor(containerId: string) {
     super(containerId, template);
-    this.params = params ?? null;
   }
 
   async render(): Promise<void> {
-    if (!this.params) {
-      return;
-    }
     const idx = this.params?.["foodIdx"]! as string;
     try {
       const headerElement = header({ title: "음식 상세", hasBack: true });

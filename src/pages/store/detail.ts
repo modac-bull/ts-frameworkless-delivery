@@ -4,7 +4,6 @@ import header from "@/components/header/header";
 import foodItem from "@/components/food/foodItem";
 import { getFoodListDataByIdx } from "@/apis/food/food";
 import Page from "@/core/Page";
-import { Params } from "@/router/router";
 import storeInfo from "@/components/store/storeInfo";
 import { getStoreDetailByIdx } from "@/apis/store/store";
 
@@ -21,22 +20,16 @@ const template = `{{__header__}}
   </div>
   `;
 export default class StoreDetailPage extends Page {
-  params: Params | null;
-  constructor(containerId: string, params?: Params) {
+  constructor(containerId: string) {
     super(containerId, template);
-    this.params = params ?? null;
   }
   async render(): Promise<void> {
-    if (!this.params) {
-      console.log("dpfj?");
-      return;
-    }
     const idx = this.params?.["storeIdx"]! as string;
 
     try {
       const foodListData = await getFoodListDataByIdx(idx);
 
-      const headerElement = header({ title: "메인", hasBack: false });
+      const headerElement = header({ title: "가게 상세", hasBack: true });
       this.setTemplateData("header", headerElement);
 
       const storeDetail = await getStoreDetailByIdx(Number(idx));

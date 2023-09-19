@@ -1,7 +1,18 @@
+import { Params } from "@/router/router";
+
 export default abstract class Page {
   template: string;
   container: HTMLElement;
   renderTemplate: string;
+  _params: Params | null = null;
+
+  get params(): Params | null {
+    return this._params;
+  }
+
+  set params(value: Params | null) {
+    this._params = value;
+  }
 
   constructor(containerId: string, template: string) {
     const containerElement = document.getElementById(containerId);

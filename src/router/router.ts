@@ -1,3 +1,5 @@
+import Page from "@/core/Page";
+
 const ROUTE_PARAMETER_REGEXP = /:(\w+)/g;
 const URL_FRAGMENT_REGEXP = "([^\\/]+)";
 
@@ -24,7 +26,7 @@ interface RenderCallbackFunction {
 
 type Route = {
   testRegExp: RegExp;
-  callback: RenderCallbackFunction;
+  page: Page;
   params: ParamsId;
 };
 type ParamsId = string[];
@@ -44,6 +46,8 @@ class Router {
   /* 
   현재 URL을 확인하고 일치하는 라우트의 콜백을 실행
   일치하는 라우트 없을 경우 notFound 콜백 실행
+  TODO
+  - 페이지 클래스 인스턴스 받아와서 인스턴스.render 호출되도록 처리하기
   */
   checkRoutes() {
     const { pathname } = window.location;
@@ -60,12 +64,14 @@ class Router {
       this.notFound();
       return;
     }
+    console.log("currentRoute", currentRoute);
 
     const urlParams = extractUrlParams(currentRoute, pathname);
-    currentRoute.callback(urlParams);
+    currentRoute.page.params = urlParams;
+    currentRoute.page.render();
   }
 
-  addRoute(path: string, callback: RenderCallbackFunction) {
+  addRoute(path: string, page: Page) {
     const params: ParamsId = [];
     const parsedPath = path
       .replace(ROUTE_PARAMETER_REGEXP, (_, paramName) => {
@@ -75,7 +81,7 @@ class Router {
       .replace(/\//g, "\\/");
     this.routes.push({
       testRegExp: new RegExp(`^${parsedPath}$`),
-      callback,
+      page,
       params,
     });
     return this;
@@ -90,6 +96,7 @@ class Router {
   /* 주어진 경로로 이동하고 해당 라우트의 콜백을 실행 */
   navigate(path: string) {
     window.history.pushState(null, "", path);
+    console.log("currentPage?", this.routes);
     this.checkRoutes();
   }
 

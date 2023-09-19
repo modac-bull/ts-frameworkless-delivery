@@ -1,10 +1,14 @@
 import "./styles/reset.scss";
 import "./styles/global.scss";
 
-import createPages from "./router/pages";
+// import createPages from "./router/pages";
 import Router from "./router/router";
+import HomePage from "./pages/home";
+import StoreDetailPage from "./pages/store/detail";
+import FoodDetailPage from "./pages/food/detail";
+import CartPage from "./pages/cart/cart";
 
-const pages = createPages("app");
+// const pages = createPages("app");
 
 /* 
 라우트 설정
@@ -15,13 +19,17 @@ init() 메서드로 라우터 시작
 */
 // const router = createRouter();
 const router = new Router();
+const homePage = new HomePage("app");
+const storeDetailPage = new StoreDetailPage("app");
+const foodDetailPage = new FoodDetailPage("app");
+const cartListPage = new CartPage("app");
+// const likeListPage = new
+
 router
-  .addRoute("/", pages.home)
-  .addRoute("/store/:storeIdx", pages.storeDetail)
-  .addRoute("/food/:foodIdx", pages.foodDetail)
-  .addRoute("/cart", pages.cartList)
-  // .addRoute("/store", pages.storeList)
-  // .addRoute("/food", pages.foodList)
-  // .addRoute("/like", pages.likeList)
-  .setNotFound(pages.notFound)
+  .addRoute("/", homePage)
+  .addRoute("/store/:storeIdx", storeDetailPage)
+  .addRoute("/food/:foodIdx", foodDetailPage)
+  .addRoute("/cart", cartListPage)
+  // .addRoute("/like", cartListPage)
+  // .setNotFound(pages.notFound)
   .init();
