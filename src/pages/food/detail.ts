@@ -8,13 +8,15 @@ import foodPrice from "@/components/food/foodPrice";
 import Page from "@/core/Page";
 
 const template = `{{__header__}}
-  {{__food_info__}}
+  <div class='area'>
+    {{__food_info__}}
 
-  {{__food_options__}}
+    {{__food_options__}}
 
-  <div class='divider-st1'></div>
+    <div class='divider-st1'></div>
 
-  {{__bottom_sheet__}}
+    {{__bottom_sheet__}}
+  </div>
   `;
 export default class FoodDetailPage extends Page {
   constructor(containerId: string) {
