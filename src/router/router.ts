@@ -20,10 +20,6 @@ const extractUrlParams = (route: Route, pathname: string) => {
   return params;
 };
 
-interface RenderCallbackFunction {
-  (params?: Params): void;
-}
-
 type Route = {
   testRegExp: RegExp;
   page: Page;
@@ -34,12 +30,12 @@ export type Params = { [key: string]: string };
 
 class Router {
   private routes: Route[];
-  private notFound;
+  private notFound: Page | null;
   private lastPathname;
 
   constructor() {
     this.routes = [];
-    this.notFound = () => {};
+    this.notFound = null;
     this.lastPathname = "";
   }
 
@@ -67,7 +63,7 @@ class Router {
     });
 
     if (!currentRoute) {
-      this.notFound();
+      this.notFound?.render();
       return;
     }
 
@@ -93,8 +89,8 @@ class Router {
   }
 
   /* 일치하는 라우트 없을 떄 실행할 콜백 설정 */
-  setNotFound(cb: RenderCallbackFunction) {
-    this.notFound = cb;
+  setNotFound(page: Page) {
+    this.notFound = page;
     return this;
   }
 
