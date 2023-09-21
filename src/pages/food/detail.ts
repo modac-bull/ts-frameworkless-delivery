@@ -88,6 +88,7 @@ export default class FoodDetailPage extends Page {
     selectedInfo.optionIds = this.optionId;
     cart.push(selectedInfo);
     localStorage.setItem("cart", JSON.stringify(cart));
+    alert('장바구니에 추가했습니다.')
   }
 
   // 옵션 정보 업데이트
