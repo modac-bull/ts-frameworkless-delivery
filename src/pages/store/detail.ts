@@ -20,9 +20,14 @@ const template = `{{__header__}}
   </div>
   `;
 export default class StoreDetailPage extends Page {
+  isLike: boolean;
   constructor(containerId: string) {
     super(containerId, template);
+    this.isLike = false;
   }
+
+  async checkLike(): Promise<void> {}
+
   async render(): Promise<void> {
     const idx = this.params?.["storeIdx"]! as string;
 
@@ -33,7 +38,8 @@ export default class StoreDetailPage extends Page {
       this.setTemplateData("header", headerElement);
 
       const storeDetail = await getStoreDetailByIdx(Number(idx));
-      const storeInfoElement = storeInfo(storeDetail);
+
+      const storeInfoElement = storeInfo(storeDetail, this.isLike);
       this.setTemplateData("store_info", storeInfoElement);
 
       const foodListElement = foodListData
@@ -42,10 +48,32 @@ export default class StoreDetailPage extends Page {
       this.setTemplateData("food_list", foodListElement);
 
       this.updatePage();
+      this.bindEvents();
     } catch (error) {
       console.error("Error in rendering:", error);
       // 필요에 따라 오류 처리를 여기서 수행합니다.
       throw "데이터 없습니다.";
     }
+  }
+
+  updateLike() {
+    /* 
+    TODO
+    좋아요 api 호출하여 판단
+    */
+    // this.isLike = false;
+  }
+
+  eventMap() {
+    return {
+      "click #btnLike": this.buttonClickHandler,
+    };
+  }
+
+  // 장바구니 추가 로직
+  buttonClickHandler() {
+    console.log("클릭");
+    this.isLike = !this.isLike;
+    this.render();
   }
 }

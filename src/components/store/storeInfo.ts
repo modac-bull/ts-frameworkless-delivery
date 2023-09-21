@@ -2,7 +2,7 @@ import { StoreInfo } from "@/apis/store/types";
 import styles from "./storeInfo.scss";
 
 /* 가게 상세 상단 정보 */
-export default function storeInfo(data: StoreInfo) {
+export default function storeInfo(data: StoreInfo, isLike: boolean) {
   const {
     // id,
     title,
@@ -31,12 +31,14 @@ export default function storeInfo(data: StoreInfo) {
   // );
 
   // 찜,좋아요 조건 임시
-  const isLiked = true;
+  const isLiked = isLike;
 
   let template = `<div class=${styles["store-info-container"]}>
     <div class=${styles["img-wrap"]}>
       <img src=${thumImgUrls[0]} />
-      <button type='button' id='btnLike' class='${styles['btn-like']} ${isLiked ? styles['active'] : ''}'>
+      <button type='button' id='btnLike' class='${styles["btn-like"]} ${
+    isLiked ? styles["active"] : ""
+  }'>
         <i class="fa fa-heart fa-lg"></i>
       </button>
     </div>
