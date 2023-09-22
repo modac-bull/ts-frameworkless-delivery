@@ -6,6 +6,7 @@ import { getFoodListDataByIdx } from "@/apis/food/food";
 import Page from "@/core/Page";
 import storeInfo from "@/components/store/storeInfo";
 import { getStoreDetailByIdx } from "@/apis/store/store";
+import { getLikeStoreList, postLikeStore } from "@/apis/like/like";
 
 const template = `{{__header__}}
   <div class='area'>
@@ -20,24 +21,26 @@ const template = `{{__header__}}
   </div>
   `;
 export default class StoreDetailPage extends Page {
+  storeId: string | null;
   isLike: boolean;
   constructor(containerId: string) {
     super(containerId, template);
+    this.storeId = null;
     this.isLike = false;
   }
 
-  async checkLike(): Promise<void> {}
-
   async render(): Promise<void> {
-    const idx = this.params?.["storeIdx"]! as string;
+    await this.checkLike(); // 초기 상태 확인
+
+    const id = this.params?.["storeIdx"]! as string;
 
     try {
-      const foodListData = await getFoodListDataByIdx(idx);
+      const foodListData = await getFoodListDataByIdx(id);
 
       const headerElement = header({ title: "가게 상세", hasBack: true });
       this.setTemplateData("header", headerElement);
 
-      const storeDetail = await getStoreDetailByIdx(Number(idx));
+      const storeDetail = await getStoreDetailByIdx(Number(id));
 
       const storeInfoElement = storeInfo(storeDetail, this.isLike);
       this.setTemplateData("store_info", storeInfoElement);
@@ -56,24 +59,46 @@ export default class StoreDetailPage extends Page {
     }
   }
 
-  updateLike() {
-    /* 
-    TODO
-    좋아요 api 호출하여 판단
-    */
-    // this.isLike = false;
-  }
-
   eventMap() {
     return {
-      "click #btnLike": this.buttonClickHandler,
+      "click #btnLike": this.updateLike,
     };
   }
 
   // 장바구니 추가 로직
-  buttonClickHandler() {
-    console.log("클릭");
-    this.isLike = !this.isLike;
-    this.render();
+  async updateLike(): Promise<void> {
+    const id = this.params?.["storeIdx"]! as string;
+    this.isLike = !this.isLike; // 임시 상태 변경
+    await this.render(); // 상태에 따라 렌더링
+
+    try {
+      const response = await postLikeStore(id);
+
+      if (response) {
+        // 상태 유지
+      } else {
+        throw new Error("API request failed");
+      }
+    } catch (error) {
+      // 실패 시 상태 롤백 및 알림
+      this.isLike = !this.isLike;
+      await this.render();
+      alert("좋아요 실패");
+    }
+  }
+
+  // 초기 좋아요 상태 확인
+  async checkLike(): Promise<void> {
+    const id = this.params?.["storeIdx"]! as string;
+    try {
+      const res = await getLikeStoreList();
+      if (res.includes(id)) {
+        console.log("res", id, res.includes(id));
+        this.isLike = true; // 초기 좋아요 상태 설정
+        // this.render(); // 좋아요 상태에 따라 렌더링
+      }
+    } catch (error) {
+      console.error("초기 상태 로딩 실패", error);
+    }
   }
 }
