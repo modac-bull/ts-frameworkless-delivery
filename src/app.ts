@@ -8,6 +8,7 @@ import StoreDetailPage from "./pages/store/detail";
 import FoodDetailPage from "./pages/food/detail";
 import CartPage from "./pages/cart/cart";
 import NotFoundPage from "./pages/404";
+import LikePage from "./pages/like/like";
 
 /* 
 라우트 설정
@@ -21,13 +22,13 @@ const storeDetailPage = new StoreDetailPage("app");
 const foodDetailPage = new FoodDetailPage("app");
 const cartListPage = new CartPage("app");
 const notFoundPage = new NotFoundPage("app");
-// const likeListPage = new
+const likeListPage = new LikePage("app");
 
 router
   .addRoute("/", homePage)
   .addRoute("/store/:storeIdx", storeDetailPage)
   .addRoute("/food/:foodIdx", foodDetailPage)
   .addRoute("/cart", cartListPage)
-  // .addRoute("/like", cartListPage)
+  .addRoute("/like", likeListPage)
   .setNotFound(notFoundPage)
   .init();

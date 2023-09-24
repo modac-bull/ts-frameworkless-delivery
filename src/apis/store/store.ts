@@ -19,6 +19,7 @@ export const getStoreListData = (): Promise<StoreItem[]> => {
 가게 상세 데이터 api
 */
 export const getStoreDetailByIdx = (idx: number): Promise<StoreInfo> => {
+  console.log("idx", idx);
   return new Promise((res, rej) => {
     const success = idx in DUMMY_STORE_DETAIL; // 임시
     setTimeout(() => {
