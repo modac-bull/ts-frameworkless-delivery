@@ -1,4 +1,5 @@
 import styles from "./detail.scss";
+import storeStyles from "../../components/store/storeInfo.scss";
 
 import header from "@/components/header/header";
 import foodItem from "@/components/food/foodItem";
@@ -6,7 +7,7 @@ import { getFoodListDataByIdx } from "@/apis/food/food";
 import Page from "@/core/Page";
 import storeInfo from "@/components/store/storeInfo";
 import { getStoreDetailByIdx } from "@/apis/store/store";
-import { getLikeStoreList, postLikeStore } from "@/apis/like/like";
+import { deleteLikeStore, getLikeStoreList, postLikeStore } from "@/apis/like/like";
 
 const template = `{{__header__}}
   <div class='area'>
@@ -30,7 +31,7 @@ export default class StoreDetailPage extends Page {
   }
 
   async render(): Promise<void> {
-    await this.checkLike(); // 초기 상태 확인
+    this.checkLike(); // 초기 상태 확인
 
     const id = this.params?.["storeIdx"]! as string;
 
@@ -67,16 +68,24 @@ export default class StoreDetailPage extends Page {
 
   // 장바구니 추가 로직
   async updateLike(): Promise<void> {
+    let tempIsLike = !this.isLike;
+    this.isLike = tempIsLike; // 임시 상태 변경
+    await this.updateLikeUI(); // UI 업데이트
     const id = this.params?.["storeIdx"]! as string;
-    this.isLike = !this.isLike; // 임시 상태 변경
-    await this.render(); // 상태에 따라 렌더링
 
     try {
-      const response = await postLikeStore(id);
+      let response;
+      if (this.isLike) {
+        response = await postLikeStore(id);
+      } else {
+        response = await deleteLikeStore(id);
+      }
 
       if (response) {
         // 상태 유지
+        await this.render();
       } else {
+        this.isLike = !tempIsLike;
         throw new Error("API request failed");
       }
     } catch (error) {
@@ -87,15 +96,27 @@ export default class StoreDetailPage extends Page {
     }
   }
 
+  // 좋아요 UI만 업데이트
+  async updateLikeUI(): Promise<void> {
+    const likeElement = document.querySelector("#btnLike");
+    if (likeElement) {
+      if (this.isLike) {
+        likeElement.classList.add(storeStyles["active"]); // liked는 좋아요 상태를 나타내는 CSS 클래스
+      } else {
+        likeElement.classList.remove(storeStyles["active"]);
+      }
+    }
+  }
+
   // 초기 좋아요 상태 확인
   async checkLike(): Promise<void> {
     const id = this.params?.["storeIdx"]! as string;
     try {
       const res = await getLikeStoreList();
       if (res.includes(id)) {
-        console.log("res", id, res.includes(id));
         this.isLike = true; // 초기 좋아요 상태 설정
-        // this.render(); // 좋아요 상태에 따라 렌더링
+      } else {
+        this.isLike = false;
       }
     } catch (error) {
       console.error("초기 상태 로딩 실패", error);
