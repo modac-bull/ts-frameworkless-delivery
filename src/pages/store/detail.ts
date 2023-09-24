@@ -7,7 +7,11 @@ import { getFoodListDataByIdx } from "@/apis/food/food";
 import Page from "@/core/Page";
 import storeInfo from "@/components/store/storeInfo";
 import { getStoreDetailByIdx } from "@/apis/store/store";
-import { deleteLikeStore, getLikeStoreList, postLikeStore } from "@/apis/like/like";
+import {
+  deleteLikeStore,
+  getLikeStoreList,
+  postLikeStore,
+} from "@/apis/like/like";
 
 const template = `{{__header__}}
   <div class='area'>
@@ -28,36 +32,6 @@ export default class StoreDetailPage extends Page {
     super(containerId, template);
     this.storeId = null;
     this.isLike = false;
-  }
-
-  async render(): Promise<void> {
-    this.checkLike(); // 초기 상태 확인
-
-    const id = this.params?.["storeIdx"]! as string;
-
-    try {
-      const foodListData = await getFoodListDataByIdx(id);
-
-      const headerElement = header({ title: "가게 상세", hasBack: true });
-      this.setTemplateData("header", headerElement);
-
-      const storeDetail = await getStoreDetailByIdx(Number(id));
-
-      const storeInfoElement = storeInfo(storeDetail, this.isLike);
-      this.setTemplateData("store_info", storeInfoElement);
-
-      const foodListElement = foodListData
-        .map((food) => foodItem(food))
-        .join("");
-      this.setTemplateData("food_list", foodListElement);
-
-      this.updatePage();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-      // 필요에 따라 오류 처리를 여기서 수행합니다.
-      throw "데이터 없습니다.";
-    }
   }
 
   eventMap() {
@@ -120,6 +94,34 @@ export default class StoreDetailPage extends Page {
       }
     } catch (error) {
       console.error("초기 상태 로딩 실패", error);
+    }
+  }
+  async updateUI(): Promise<void> {
+    this.checkLike(); // 초기 상태 확인
+
+    const id = this.params?.["storeIdx"]! as string;
+
+    const foodListData = await getFoodListDataByIdx(id);
+    const headerElement = header({ title: "가게 상세", hasBack: true });
+    this.setTemplateData("header", headerElement);
+
+    const storeDetail = await getStoreDetailByIdx(Number(id));
+    const storeInfoElement = storeInfo(storeDetail, this.isLike);
+    this.setTemplateData("store_info", storeInfoElement);
+
+    const foodListElement = foodListData.map((food) => foodItem(food)).join("");
+    this.setTemplateData("food_list", foodListElement);
+
+    this.updatePage();
+  }
+
+  async render(): Promise<void> {
+    try {
+      await this.updateUI();
+      this.bindEvents();
+    } catch (error) {
+      console.error("Error in rendering:", error);
+      throw "데이터 없습니다.";
     }
   }
 }

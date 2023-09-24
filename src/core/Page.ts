@@ -5,7 +5,7 @@ export default abstract class Page {
   container: HTMLElement;
   renderTemplate: string;
   _params: Params | null = null;
-  boundEventHandlers: { [key: string]: (event: Event) => void } = {};
+  boundEventHandlers: EventMapType = {};
 
   get params(): Params | null {
     return this._params;
@@ -82,5 +82,18 @@ export default abstract class Page {
     }
   }
 
-  abstract render(): Promise<void>;
+  /**
+   * UI 업데이트를 위한 추상 메서드
+   * 하위 클래스에서 구현
+   */
+  abstract updateUI(): Promise<void>;
+
+  async render(): Promise<void> {
+    try {
+      await this.updateUI(); // updateUI 호출
+      this.bindEvents();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
