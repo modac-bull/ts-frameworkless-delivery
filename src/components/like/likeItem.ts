@@ -1,40 +1,48 @@
+import { StoreItem } from "@/apis/store/types";
 import styles from "./likeItem.scss";
-import { FoodDetailItem } from "@/apis/food/types";
 
 /* 가게 목록 아이템 컴포넌트 */
-export default function likeItem(data: FoodDetailItem, optionIdx: string[]) {
-  const { id, title, desc, options, price, thumbImg } = data;
+export default function likeItem(data: StoreItem) {
+  const {
+    id,
+    title,
+    delivery_time,
+    review_point,
+    review_cnt,
+    distance,
+    delivery_price_range,
+    thumImgUrls,
+  } = data;
 
-  const selectedOption =
-    options &&
-    optionIdx?.map((option) =>
-      options.find((elem) => elem.id === Number(option))
-    );
-
-  const selectedOptionElement =
-    selectedOption?.map((option) => `<span>${option?.title}</span>`).join("") ??
-    "-";
-
-  let template = `<div class=${styles["like-item-wrapper"]}>
-    <div class=${styles["img-wrapper"]}>
-      <img src=${thumbImg}/>
+  let template = `<div data-navigate=/store/${id}  class=${styles["like-item-wrapper"]}>
+  <div class=${styles["img-wrapper"]}>
+  <div class=${styles["left"]}>
+    <img src=${thumImgUrls[0]} />
+  </div>
+  <div class=${styles["right"]}>
+    <img src=${thumImgUrls[1]} />
+    <img src=${thumImgUrls[2]} />
+  </div>
+</div>
+<div class=${styles["info-wrapper"]}>
+  <div class=${styles["left"]}>
+    <div class=${styles["title-wrapper"]}>
+      <h2 class=${styles["title"]}>${title}</h2>
     </div>
-    <div class=${styles["info-wrapper"]}>
-
-      <button class='${styles["btn-close"]}' id='btn-remove-like'>
-        <i class="fa fa-times fa-lg" data-id=${id}></i>
-      </button>
-      <h3 class=${styles["title-food"]}>${title}</h3>
-      <ul class=${styles["desc-wrap"]}>
-        <li class=${styles["text-price"]}>가격 : ${
-    price?.toLocaleString() ?? 0
-  }원</li>
-        <li class=${styles["text-desc"]}>${desc}</li>
-        <li class=${
-          styles["text-options"]
-        }>선택된 옵션 : ${selectedOptionElement}</li>
-      </ul>
+    <div class=${styles["description"]}>
+      <span class=${styles["reviews"]}>
+        <i class="fa fa-star fa-lg"></i>
+        ${review_point}(${review_cnt.toLocaleString()})
+      </span>
+      <span> ${distance}km</span>
+      <span> ${delivery_price_range[0].toLocaleString()}원 ~ ${delivery_price_range[1].toLocaleString()}원</span>
     </div>
+  </div>
+  <div class=${styles["right"]}>
+    <p> ${delivery_time[0]} ~ ${delivery_time[1]} 분</p>
+  </div>
+</div>
+</div>
   </div>
   `;
 

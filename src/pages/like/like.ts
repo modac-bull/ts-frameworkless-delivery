@@ -31,14 +31,14 @@ export default class LikePage extends Page {
       JSON.parse(localStorage.getItem("like") as string) || [];
 
     const likeStoreItemData = await Promise.all(
-      getLikeStoreItemData.map((likeId : string) =>
+      getLikeStoreItemData.map((likeId: string) =>
         getStoreDetailByIdx(Number(likeId))
       )
     );
 
     // const cartItemData = await getLikeStoreList();
     const likeStoreItemElement = likeStoreItemData
-      .map((cart, idx) => likeItem(cart, getLikeStoreItemData[idx].optionIds))
+      .map((cart) => likeItem(cart))
       .join("");
     console.log("render", likeStoreItemData);
     return likeStoreItemElement;
@@ -47,10 +47,8 @@ export default class LikePage extends Page {
   async updateUI(): Promise<void> {
     const headerElement = header({ title: "찜 페이지", hasBack: true });
     this.setTemplateData("header", headerElement);
-
     // 좋아요 리스트 렌더링
-    this.renderLikeElement();
-
+    this.setTemplateData("like_item", await this.renderLikeElement());
     this.updatePage();
   }
 

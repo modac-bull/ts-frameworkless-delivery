@@ -1,49 +1,83 @@
 .like-item-wrapper {
+ padding: 20px 20px; 
+}
+
+.img-wrapper {
   display: flex;
-  &:not(:last-child) {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #ededed;
-  }
-  .img-wrapper {
-    flex: 0 0 30%;
-    width: 30%;
-    aspect-ratio: 1 /1;
-    overflow: hidden;
-    border-radius: 5px;
-  }
-  .info-wrapper {
-    padding-left: 30px;
-    position: relative;
+  align-items: center;
+  column-gap: 5px;
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  .left {
     flex: 0 0 70%;
     width: 70%;
-    .btn-close {
-      position: absolute;
-      right: 0;
-      top: 0;
+    img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
     }
-    .title-food {
-      margin-bottom: 10px;
-      font-size: 18px;
-      font-weight: 500;
+  }
+  .right {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    flex: 0 0 30%;
+    width: 30%;
+    height: 100%;
+    img {
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
     }
-    .desc-wrap {
-      color: #999;
-      li {
-        margin: 4px 0;
-      }
-      .text-desc {
-        font-size: 15px;
-      }
-      .text-price {
-        font-size: 15px;
-      }
-      .text-options {
-        font-size: 15px;
-        span {
-          margin-right: 5px;
+  }
+}
+
+.info-wrapper {
+  display: flex;
+  padding: 10px 0;
+  .left {
+    width: calc(100% - 80px);
+    .description {
+      display: flex;
+      column-gap: 2px;
+      font-size: 14px;
+      color: #666;
+      margin-top: 3px;
+      span {
+        &:not(:nth-last-of-type(1)) {
+          &:after {
+            content: "∙";
+            display: inline-block;
+            margin-left: 2px;
+          }
         }
       }
+    }
+    .reviews {
+      display: flex;
+      align-items: center;
+      // 별 아이콘
+      i {
+        margin-right: 3px;
+        font-size: 13px;
+        color: orange;
+      }
+    }
+  }
+  .right {
+    flex: 0 0 80px;
+    width: 80px;
+    margin-top: 2px;
+    font-size: 15px;
+    color: #666;
+  }
+  .title-wrapper {
+    .title {
+      font-size: 22px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
   }
 }
