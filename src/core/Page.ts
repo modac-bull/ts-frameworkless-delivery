@@ -1,10 +1,15 @@
 import { Params } from "@/router/router";
 type EventMapType = { [key: string]: (event: Event) => void };
 export default abstract class Page {
+  /* 페이지 HTML 템플릿 */
   template: string;
+  /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
   container: HTMLElement;
+  /* 실시간으로 렌더링될 템플릿 */
   renderTemplate: string;
+  /* 페이지에 전달된 파라미터 저장 */
   _params: Params | null = null;
+  /* 이벤트 핸들러 함수 저장 */
   boundEventHandlers: EventMapType = {};
 
   get params(): Params | null {
@@ -15,6 +20,9 @@ export default abstract class Page {
     this._params = value;
   }
 
+  /* 
+  - 페이지가 사용할 containerId, template을 받아 초기화
+  */
   constructor(containerId: string, template: string) {
     const containerElement = document.getElementById(containerId);
 
@@ -27,10 +35,12 @@ export default abstract class Page {
     this.renderTemplate = template;
   }
 
+  /* 템플릿에 데이터를 입힌 템플릿으로 교체 */
   setTemplateData(key: string, value: string): void {
     this.renderTemplate = this.renderTemplate.replace(`{{__${key}__}}`, value);
   }
 
+  /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
   updatePage(): void {
     this.container.innerHTML = this.renderTemplate;
     this.renderTemplate = this.template;
@@ -88,6 +98,9 @@ export default abstract class Page {
    */
   abstract updateUI(): Promise<void>;
 
+  /* 
+  updateUI 호출, 이벤트를 바인딩
+  */
   async render(): Promise<void> {
     try {
       await this.updateUI(); // updateUI 호출
