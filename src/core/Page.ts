@@ -7,6 +7,14 @@ export default abstract class Page {
   _params: Params | null = null;
   boundEventHandlers: { [key: string]: (event: Event) => void } = {};
 
+  // 기준 생각해보기
+
+  /* 
+  메소드
+  getter/setter
+  각 구현 방식에 대한 특징 정도는 알고 써야함
+  */
+
   get params(): Params | null {
     return this._params;
   }

@@ -61,11 +61,15 @@ export default class FoodDetailPage extends Page {
       const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
       this.setTemplateData("bottom_sheet", bottomSheetElement);
 
-      this.updatePage();
+      // this.updatePage();
       this.bindEvents();
     } catch {
-      throw "데이터 없음";
+      // error와 exception, throw => 동작원리, throw 할 수 있는 것들 => suspense, 내부 구현 방법 관계 파악하기
+      // throw "데이터 없음";
+      // 데이터 없을 때의 UI를 업데이트하는 로직
     }
+    this.updatePage();
+    // updatePage, event 처리 부분을 render에서 한꺼번에 해야 하는가? 
   }
 
   eventMap() {
@@ -83,6 +87,13 @@ export default class FoodDetailPage extends Page {
       optionIds: [],
     };
 
+    /* 
+    !!! 로컬스토리지 JSON.Parse 모듈화 !!!
+    - 방어 코드 
+    - 예외 처리
+    - 단골 코스
+    - 예외처리, 에러 상황에서 어떻게 처리할 것인지에 대해 고민 -> 개선하기
+    */
     let cart = JSON.parse(localStorage.getItem("cart") as string) || [];
     selectedInfo.foodId = this.foodId;
     selectedInfo.optionIds = this.optionId;

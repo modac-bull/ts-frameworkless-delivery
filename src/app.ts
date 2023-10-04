@@ -27,8 +27,8 @@ const cartListPage = new CartPage("app");
 
 router
   .addRoute("/", homePage)
-  .addRoute("/store/:storeIdx", storeDetailPage)
-  .addRoute("/food/:foodIdx", foodDetailPage)
+  .addRoute("/store/:storeId", storeDetailPage)
+  .addRoute("/food/:foodId", foodDetailPage)
   .addRoute("/cart", cartListPage)
   // .addRoute("/like", cartListPage)
   // .setNotFound(pages.notFound)
