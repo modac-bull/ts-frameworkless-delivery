@@ -4,7 +4,7 @@ import { FoodDetailItem, FoodListlItem } from "./types";
 /* 
 음식 리스트 데이터 api
 */
-export const getFoodListDataByIdx = (idx: number): Promise<FoodListlItem[]> => {
+export const getFoodListDataByIdx = (idx: string): Promise<FoodListlItem[]> => {
   return new Promise((res, rej) => {
     const success = true; // 임시
     setTimeout(() => {

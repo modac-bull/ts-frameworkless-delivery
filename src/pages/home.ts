@@ -1,26 +1,42 @@
 import header from "@/components/header/header";
 import styles from "./home.scss";
-import storeItem from "@/components/store/storeItem";
+import Page from "@/core/Page";
 import { getStoreListData } from "@/apis/store/store";
+import storeItem from "@/components/store/storeItem";
 
-export default async function homePage(target: Element) {
-  let template = `
-  {{__header__}}
-  <div class='area'>
-    <div class=${styles["main"]}>
-      <ul>
-        {{__food_list__}}
-      </ul>
-    </div>
+const template = `
+{{__header__}}
+<div class='area'>
+  <div class=${styles["main"]}>
+    <ul>
+      {{__food_list__}}
+    </ul>
   </div>
-  `;
+</div>
+`;
+export default class HomePage extends Page {
+  constructor(containerId: string) {
+    super(containerId, template);
+  }
 
-  const headerElement = header({ title: "메인", hasBack: false });
-  template = template.replace("{{__header__}}", headerElement);
+  async updateUI(): Promise<void> {
+    const res = await getStoreListData();
 
-  const res = await getStoreListData();
-  const foodlistElement = res.map((store) => storeItem(store)).join("");
-  template = template.replace("{{__food_list__}}", foodlistElement);
+    const headerElement = header({ title: "메인", hasBack: false });
+    this.setTemplateData("header", headerElement);
 
-  target.innerHTML = template;
+    const foodlistElement = res.map((store) => storeItem(store)).join("");
+    this.setTemplateData("food_list", foodlistElement);
+
+    this.updatePage();
+  }
+
+  async render(): Promise<void> {
+    try {
+      await this.updateUI();
+      this.bindEvents();
+    } catch (error) {
+      console.error("Error : ", error);
+    }
+  }
 }
