@@ -1,7 +1,11 @@
 .food-info-container {
   .img-wrap {
-    aspect-ratio: 4 / 3;
     overflow: hidden;
+    img {
+      width: 100%;
+      aspect-ratio: 5 / 3;
+      object-fit: cover;
+    }
   }
   .info-wrap {
     padding: 20px 20px;

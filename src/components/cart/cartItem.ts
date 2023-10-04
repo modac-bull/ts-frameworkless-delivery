@@ -21,8 +21,8 @@ export default function cartItem(data: FoodDetailItem, optionIdx: string[]) {
     </div>
     <div class=${styles["info-wrapper"]}>
 
-      <button class='${styles["btn-close"]}' >
-        <i class="fa fa-times fa-lg  remove-cart-button" data-id=${id}></i>
+      <button class='${styles["btn-close"]}' id='btn-remove-cart'>
+        <i class="fa fa-times fa-lg" data-id=${id}></i>
       </button>
       <h3 class=${styles["title-food"]}>${title}</h3>
       <ul class=${styles["desc-wrap"]}>

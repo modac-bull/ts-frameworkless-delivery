@@ -1,19 +1,13 @@
-import { Params } from "@/router/router";
 import styles from "./detail.scss";
 
 import header from "@/components/header/header";
-import storeInfo from "@/components/store/storeInfo";
-import { getStoreDetailByIdx } from "@/apis/store/store";
 import foodItem from "@/components/food/foodItem";
 import { getFoodListDataByIdx } from "@/apis/food/food";
+import Page from "@/core/Page";
+import storeInfo from "@/components/store/storeInfo";
+import { getStoreDetailByIdx } from "@/apis/store/store";
 
-export default async function storeDetailPage(
-  target: Element,
-  params?: Params
-) {
-  const idx = params?.["storeIdx"]!;
-
-  let template = `{{__header__}}
+const template = `{{__header__}}
   <div class='area'>
     {{__store_info__}}
 
@@ -25,22 +19,33 @@ export default async function storeDetailPage(
     </div>
   </div>
   `;
+export default class StoreDetailPage extends Page {
+  constructor(containerId: string) {
+    super(containerId, template);
+  }
+  async render(): Promise<void> {
+    const idx = this.params?.["storeIdx"]! as string;
 
-  try {
-    const storeInfoRes = await getStoreDetailByIdx(Number(idx));
+    try {
+      const foodListData = await getFoodListDataByIdx(idx);
 
-    const headerElement = header({ title: "가게 상세", hasBack: true });
-    template = template.replace("{{__header__}}", headerElement);
+      const headerElement = header({ title: "가게 상세", hasBack: true });
+      this.setTemplateData("header", headerElement);
 
-    const storeInfoElement = storeInfo(storeInfoRes);
-    template = template.replace("{{__store_info__}}", storeInfoElement);
+      const storeDetail = await getStoreDetailByIdx(Number(idx));
+      const storeInfoElement = storeInfo(storeDetail);
+      this.setTemplateData("store_info", storeInfoElement);
 
-    const foodListRes = await getFoodListDataByIdx(Number(idx));
-    const foodListElement = foodListRes.map((food) => foodItem(food)).join("");
-    template = template.replace("{{__food_list__}}", foodListElement);
+      const foodListElement = foodListData
+        .map((food) => foodItem(food))
+        .join("");
+      this.setTemplateData("food_list", foodListElement);
 
-    target.innerHTML = template;
-  } catch {
-    target.innerHTML = `<p>데이터 없음</p>`;
+      this.updatePage();
+    } catch (error) {
+      console.error("Error in rendering:", error);
+      // 필요에 따라 오류 처리를 여기서 수행합니다.
+      throw "데이터 없습니다.";
+    }
   }
 }
