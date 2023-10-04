@@ -7,29 +7,28 @@ import HomePage from "./pages/home";
 import StoreDetailPage from "./pages/store/detail";
 import FoodDetailPage from "./pages/food/detail";
 import CartPage from "./pages/cart/cart";
-
-// const pages = createPages("app");
+import NotFoundPage from "./pages/404";
+import LikePage from "./pages/like/like";
 
 /* 
 라우트 설정
-경로 - 경로에 맞는 함수 호출되도록 설정
-일치하는 경로 없을 경우 page.notFound 호출
-init() 메서드로 라우터 시작
-- 초기 경로 확인, 페이지 내에서 라우트 변경을 감지하기 위한 리스너 설정
+- url경로-페이지 인스턴스를 전달
+- 일치하는 경로 없을 경우 notFoundPage 페이지 인스턴스 전달
+- init() 메서드로 라우터 시작
 */
-// const router = createRouter();
 const router = new Router();
 const homePage = new HomePage("app");
 const storeDetailPage = new StoreDetailPage("app");
 const foodDetailPage = new FoodDetailPage("app");
 const cartListPage = new CartPage("app");
-// const likeListPage = new
+const notFoundPage = new NotFoundPage("app");
+const likeListPage = new LikePage("app");
 
 router
   .addRoute("/", homePage)
   .addRoute("/store/:storeId", storeDetailPage)
   .addRoute("/food/:foodId", foodDetailPage)
   .addRoute("/cart", cartListPage)
-  // .addRoute("/like", cartListPage)
-  // .setNotFound(pages.notFound)
+  .addRoute("/like", likeListPage)
+  .setNotFound(notFoundPage)
   .init();

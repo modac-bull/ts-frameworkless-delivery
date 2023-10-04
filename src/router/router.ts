@@ -3,6 +3,9 @@ import Page from "@/core/Page";
 const ROUTE_PARAMETER_REGEXP = /:(\w+)/g;
 const URL_FRAGMENT_REGEXP = "([^\\/]+)";
 
+/* 
+주어진 route와 경로를 기반으로 url 추출하여 반환
+*/
 const extractUrlParams = (route: Route, pathname: string) => {
   const params: Params = {};
   if (route.params.length === 0) {
@@ -20,10 +23,6 @@ const extractUrlParams = (route: Route, pathname: string) => {
   return params;
 };
 
-interface RenderCallbackFunction {
-  (params?: Params): void;
-}
-
 type Route = {
   testRegExp: RegExp;
   page: Page;
@@ -34,18 +33,18 @@ export type Params = { [key: string]: string };
 
 class Router {
   private routes: Route[];
-  private notFound;
+  private notFound: Page | null;
   private lastPathname;
 
   constructor() {
     this.routes = [];
-    this.notFound = () => {};
+    this.notFound = null;
     this.lastPathname = "";
   }
 
   /* 
   현재 URL을 확인하고 일치하는 라우트의 페이지 인스턴스 render 메서드 수행
-  - 이벤트 리스너 해제 코드 추가
+  이미 렌더링된 페이지 있으면 해당 페이지의 이벤트 리스너 해제
   */
   checkRoutes() {
     const { pathname } = window.location;
@@ -67,7 +66,7 @@ class Router {
     });
 
     if (!currentRoute) {
-      this.notFound();
+      this.notFound?.render();
       return;
     }
 
@@ -76,6 +75,7 @@ class Router {
     currentRoute.page.render();
   }
 
+  /* 새로운 route 경로에 페이지 인스턴스를 추가 */
   addRoute(path: string, page: Page) {
     const params: ParamsId = [];
     const parsedPath = path
@@ -93,8 +93,8 @@ class Router {
   }
 
   /* 일치하는 라우트 없을 떄 실행할 콜백 설정 */
-  setNotFound(cb: RenderCallbackFunction) {
-    this.notFound = cb;
+  setNotFound(page: Page) {
+    this.notFound = page;
     return this;
   }
 

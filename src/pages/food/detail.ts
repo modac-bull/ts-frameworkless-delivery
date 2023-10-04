@@ -31,47 +31,6 @@ export default class FoodDetailPage extends Page {
     this.totalPrice = 0;
   }
 
-  async render(): Promise<void> {
-    const idx = this.params?.["foodIdx"]! as string;
-    this.foodId = idx;
-    this.optionId = [];
-    try {
-      const headerElement = header({ title: "음식 상세", hasBack: true });
-      this.setTemplateData("header", headerElement);
-
-      const foodDetailRes = await getFoodDetailByIdx(Number(idx));
-      this.totalPrice = foodDetailRes.price;
-
-      const foodInfoElement = foodInfo(foodDetailRes);
-      this.setTemplateData("food_info", foodInfoElement);
-
-      const optionInfoElement =
-        foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
-        "<p>옵션이 없습니다.</p>";
-      this.setTemplateData(
-        "food_options",
-        `<div class=${styles["option-container"]}>
-          <p class=${styles["title-option"]}>추가선택</p>
-          ${optionInfoElement}
-        </div>` ?? ""
-      );
-
-      /* TODO = 가격 갱신 로직 추가 */
-      const SELECTED_PRICE = this.totalPrice;
-      const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
-      this.setTemplateData("bottom_sheet", bottomSheetElement);
-
-      // this.updatePage();
-      this.bindEvents();
-    } catch {
-      // error와 exception, throw => 동작원리, throw 할 수 있는 것들 => suspense, 내부 구현 방법 관계 파악하기
-      // throw "데이터 없음";
-      // 데이터 없을 때의 UI를 업데이트하는 로직
-    }
-    this.updatePage();
-    // updatePage, event 처리 부분을 render에서 한꺼번에 해야 하는가? 
-  }
-
   eventMap() {
     return {
       "click #btn-add-cart": this.buttonClickHandler,
@@ -99,6 +58,7 @@ export default class FoodDetailPage extends Page {
     selectedInfo.optionIds = this.optionId;
     cart.push(selectedInfo);
     localStorage.setItem("cart", JSON.stringify(cart));
+    alert("장바구니에 추가했습니다.");
   }
 
   // 옵션 정보 업데이트
@@ -124,6 +84,48 @@ export default class FoodDetailPage extends Page {
       if (totalPriceElement) {
         totalPriceElement.textContent = this.totalPrice.toLocaleString();
       }
+    }
+  }
+
+  async updateUI(): Promise<void> {
+    const idx = this.params?.["foodId"]! as string;
+    this.foodId = idx;
+    this.optionId = [];
+
+    const headerElement = header({ title: "음식 상세", hasBack: true });
+    this.setTemplateData("header", headerElement);
+
+    const foodDetailRes = await getFoodDetailByIdx(Number(idx));
+    this.totalPrice = foodDetailRes.price;
+
+    const foodInfoElement = foodInfo(foodDetailRes);
+    this.setTemplateData("food_info", foodInfoElement);
+
+    const optionInfoElement =
+      foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
+      "<p>옵션이 없습니다.</p>";
+    this.setTemplateData(
+      "food_options",
+      `<div class=${styles["option-container"]}>
+        <p class=${styles["title-option"]}>추가선택</p>
+        ${optionInfoElement}
+      </div>` ?? ""
+    );
+
+    const SELECTED_PRICE = this.totalPrice;
+    const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
+    this.setTemplateData("bottom_sheet", bottomSheetElement);
+
+    this.updatePage();
+  }
+
+  async render(): Promise<void> {
+    try {
+      await this.updateUI();
+      this.bindEvents();
+    } catch (error) {
+      console.error("Error in rendering:", error);
+      throw "데이터 없음";
     }
   }
 }
