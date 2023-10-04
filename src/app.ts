@@ -26,8 +26,8 @@ const likeListPage = new LikePage("app");
 
 router
   .addRoute("/", homePage)
-  .addRoute("/store/:storeIdx", storeDetailPage)
-  .addRoute("/food/:foodIdx", foodDetailPage)
+  .addRoute("/store/:storeId", storeDetailPage)
+  .addRoute("/food/:foodId", foodDetailPage)
   .addRoute("/cart", cartListPage)
   .addRoute("/like", likeListPage)
   .setNotFound(notFoundPage)

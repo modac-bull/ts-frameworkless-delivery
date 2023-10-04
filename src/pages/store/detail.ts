@@ -45,7 +45,7 @@ export default class StoreDetailPage extends Page {
     let tempIsLike = !this.isLike;
     this.isLike = tempIsLike; // 임시 상태 변경
     await this.updateLikeUI(); // UI 업데이트
-    const id = this.params?.["storeIdx"]! as string;
+    const id = this.params?.["storeId"]! as string;
 
     try {
       let response;
@@ -84,7 +84,7 @@ export default class StoreDetailPage extends Page {
 
   // 초기 좋아요 상태 확인
   async checkLike(): Promise<void> {
-    const id = this.params?.["storeIdx"]! as string;
+    const id = this.params?.["storeId"]! as string;
     try {
       const res = await getLikeStoreList();
       if (res.includes(id)) {
@@ -99,7 +99,7 @@ export default class StoreDetailPage extends Page {
   async updateUI(): Promise<void> {
     this.checkLike(); // 초기 상태 확인
 
-    const id = this.params?.["storeIdx"]! as string;
+    const id = this.params?.["storeId"]! as string;
 
     const foodListData = await getFoodListDataByIdx(id);
     const headerElement = header({ title: "가게 상세", hasBack: true });

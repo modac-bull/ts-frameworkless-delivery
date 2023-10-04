@@ -46,6 +46,13 @@ export default class FoodDetailPage extends Page {
       optionIds: [],
     };
 
+    /* 
+    !!! 로컬스토리지 JSON.Parse 모듈화 !!!
+    - 방어 코드 
+    - 예외 처리
+    - 단골 코스
+    - 예외처리, 에러 상황에서 어떻게 처리할 것인지에 대해 고민 -> 개선하기
+    */
     let cart = JSON.parse(localStorage.getItem("cart") as string) || [];
     selectedInfo.foodId = this.foodId;
     selectedInfo.optionIds = this.optionId;
@@ -81,7 +88,7 @@ export default class FoodDetailPage extends Page {
   }
 
   async updateUI(): Promise<void> {
-    const idx = this.params?.["foodIdx"]! as string;
+    const idx = this.params?.["foodId"]! as string;
     this.foodId = idx;
     this.optionId = [];
 
