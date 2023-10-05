@@ -60,7 +60,7 @@ export default abstract class Page {
    *
    * @returns {EventMapType} - 이벤트 설명과 핸들러를 연결한 객체.
    */
-  eventMap(): EventMapType {
+  defineEventMap(): EventMapType {
     return {};
   }
 
@@ -68,7 +68,7 @@ export default abstract class Page {
    * `eventMap` 메서드를 통해 제공된 매핑을 기반으로 이벤트를 바인딩
    */
   bindEvents(): void {
-    const events = this.eventMap();
+    const events = this.defineEventMap();
     for (const eventSelector in events) {
       const [event, selector] = eventSelector.split(" ");
       const elements = this.container.querySelectorAll(selector);

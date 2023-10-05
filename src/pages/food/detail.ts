@@ -31,7 +31,7 @@ export default class FoodDetailPage extends Page {
     this.totalPrice = 0;
   }
 
-  eventMap() {
+  defineEventMap() {
     return {
       "click #btn-add-cart": this.buttonClickHandler,
       "change #price-option": this.inputChangeHandler,

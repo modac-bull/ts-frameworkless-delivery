@@ -39,7 +39,7 @@ export default class CartPage extends Page {
     return cartItemElement;
   }
 
-  eventMap() {
+  defineEventMap() {
     return {
       "click #btn-remove-cart": this.buttonClickHandler,
     };

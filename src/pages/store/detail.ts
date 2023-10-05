@@ -34,7 +34,7 @@ export default class StoreDetailPage extends Page {
     this.isLike = false;
   }
 
-  eventMap() {
+  defineEventMap() {
     return {
       "click #btnLike": this.updateLike,
     };
