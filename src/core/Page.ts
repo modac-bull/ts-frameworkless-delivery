@@ -2,23 +2,15 @@ import { Params } from "@/router/router";
 type EventMapType = { [key: string]: (event: Event) => void };
 export default abstract class Page {
   /* 페이지 HTML 템플릿 */
-  template: string;
+  private readonly template: string;
   /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
-  container: HTMLElement;
+  private readonly container: HTMLElement;
   /* 실시간으로 렌더링될 템플릿 */
-  renderTemplate: string;
+  private renderTemplate: string;
   /* 페이지에 전달된 파라미터 저장 */
-  _params: Params | null = null;
+  private _params: Params | null = null;
   /* 이벤트 핸들러 함수 저장 */
-  boundEventHandlers: EventMapType = {};
-
-  // 기준 생각해보기
-
-  /* 
-  메소드
-  getter/setter
-  각 구현 방식에 대한 특징 정도는 알고 써야함
-  */
+  private boundEventHandlers: EventMapType = {};
 
   get params(): Params | null {
     return this._params;
@@ -35,7 +27,7 @@ export default abstract class Page {
     const containerElement = document.getElementById(containerId);
 
     if (!containerElement) {
-      throw "일치하는 컨테이너가 없어요";
+      throw new Error("일치하는 컨테이너가 없어요");
     }
 
     this.container = containerElement;
@@ -44,12 +36,12 @@ export default abstract class Page {
   }
 
   /* 템플릿에 데이터를 입힌 템플릿으로 교체 */
-  setTemplateData(key: string, value: string): void {
+  protected setTemplateData(key: string, value: string): void {
     this.renderTemplate = this.renderTemplate.replace(`{{__${key}__}}`, value);
   }
 
   /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
-  updatePage(): void {
+  protected updatePage(): void {
     this.container.innerHTML = this.renderTemplate;
     this.renderTemplate = this.template;
   }
@@ -60,14 +52,14 @@ export default abstract class Page {
    *
    * @returns {EventMapType} - 이벤트 설명과 핸들러를 연결한 객체.
    */
-  defineEventMap(): EventMapType {
+  protected defineEventMap(): EventMapType {
     return {};
   }
 
   /**
    * `eventMap` 메서드를 통해 제공된 매핑을 기반으로 이벤트를 바인딩
    */
-  bindEvents(): void {
+  protected bindEvents(): void {
     const events = this.defineEventMap();
     for (const eventSelector in events) {
       const [event, selector] = eventSelector.split(" ");
