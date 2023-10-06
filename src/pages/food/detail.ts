@@ -8,6 +8,7 @@ import foodPrice from "@/components/food/foodPrice";
 import Page from "@/core/Page";
 import { selectedFoodInfo } from "@/apis/food/types";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
+import { localStorageKey } from "@/core/constant";
 
 const template = `{{__header__}}
   <div class='area'>
@@ -24,14 +25,14 @@ export default class FoodDetailPage extends Page {
   private foodId: string | null;
   private optionId: string[];
   private totalPrice: number;
-  private CART_KEY: string;
+  private localStorage_key: string;
 
   constructor(containerId: string) {
     super(containerId, template);
     this.foodId = "";
     this.optionId = [];
     this.totalPrice = 0;
-    this.CART_KEY = "tfd-cart";
+    this.localStorage_key = localStorageKey.CART_KEY;
   }
 
   defineEventMap() {
@@ -58,9 +59,12 @@ export default class FoodDetailPage extends Page {
     - 단골 코스
     - 예외처리, 에러 상황에서 어떻게 처리할 것인지에 대해 고민 -> 개선하기
     */
-    let cartItems = LocalStorageUtil.get<selectedFoodInfo[]>(this.CART_KEY, []);
+    let cartItems = LocalStorageUtil.get<selectedFoodInfo[]>(
+      this.localStorage_key,
+      []
+    );
     cartItems.push(selectedInfo);
-    LocalStorageUtil.set(this.CART_KEY, cartItems);
+    LocalStorageUtil.set(this.localStorage_key, cartItems);
     alert("장바구니에 추가했습니다.");
   }
 

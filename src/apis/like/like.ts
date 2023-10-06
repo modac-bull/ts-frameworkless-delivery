@@ -1,5 +1,6 @@
 import LocalStorageUtil from "@/core/LocalStorageUtil";
-const LIKE_KEY = "tfd-like";
+import { localStorageKey } from "@/core/constant";
+const LIKE_KEY = localStorageKey.LIKE_KEY;
 
 /* 
 찜 가게 요청 API

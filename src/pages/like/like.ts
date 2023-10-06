@@ -6,6 +6,7 @@ import Page from "@/core/Page";
 import { getStoreDetailByIdx } from "@/apis/store/store";
 import likeItem from "@/components/like/likeItem";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
+import { localStorageKey } from "@/core/constant";
 // import likeItem from "@/components/like/likeItem";
 
 const template = `
@@ -19,19 +20,19 @@ const template = `
 
 export default class LikePage extends Page {
   likeItemData: selectedFoodInfo[];
-  LIKE_KEY: string;
+  localStorage_key: string;
 
   constructor(containerId: string) {
     super(containerId, template);
     this.likeItemData = [];
-    this.LIKE_KEY = "tfd-like";
+    this.localStorage_key = localStorageKey.LIKE_KEY;
   }
 
   async renderLikeElement() {
     console.log("호출");
     // 로컬스토리지에서 받은 데이터
     const getLikeStoreItemData = LocalStorageUtil.get<string[]>(
-      this.LIKE_KEY,
+      this.localStorage_key,
       []
     );
 
