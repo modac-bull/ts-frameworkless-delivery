@@ -100,6 +100,7 @@ export default abstract class Page {
 
   /* 
   updateUI 호출, 이벤트를 바인딩
+  error 발생시 404 url로 이동
   */
   async render(): Promise<void> {
     try {
@@ -107,6 +108,7 @@ export default abstract class Page {
       this.bindEvents();
     } catch (error) {
       console.log(error);
+      window.location.href = "/404";
     }
   }
 }

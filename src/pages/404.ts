@@ -12,12 +12,4 @@ export default class NotFoundPage extends Page {
   async updateUI(): Promise<void> {
     this.updatePage();
   }
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-    }
-  }
 }

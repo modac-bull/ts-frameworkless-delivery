@@ -82,13 +82,4 @@ export default class CartPage extends Page {
     this.setTemplateData("cart_item", await this.renderCartElement());
     this.updatePage();
   }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-    }
-  }
 }

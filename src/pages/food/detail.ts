@@ -118,17 +118,6 @@ export default class FoodDetailPage extends Page {
     const SELECTED_PRICE = this.totalPrice;
     const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
     this.setTemplateData("bottom_sheet", bottomSheetElement);
-
     this.updatePage();
-  }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-      throw "데이터 없음";
-    }
   }
 }

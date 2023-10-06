@@ -114,14 +114,4 @@ export default class StoreDetailPage extends Page {
 
     this.updatePage();
   }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-      throw "데이터 없습니다.";
-    }
-  }
 }

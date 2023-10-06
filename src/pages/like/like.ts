@@ -51,13 +51,4 @@ export default class LikePage extends Page {
     this.setTemplateData("like_item", await this.renderLikeElement());
     this.updatePage();
   }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-    }
-  }
 }
