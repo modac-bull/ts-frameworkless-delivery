@@ -5,6 +5,7 @@ import cartItem from "@/components/cart/cartItem";
 import header from "@/components/header/header";
 import styles from "./cart.scss";
 import Page from "@/core/Page";
+import LocalStorageUtil from "@/core/LocalStorageUtil";
 
 const template = `
 {{__header__}}
@@ -17,16 +18,19 @@ const template = `
 
 export default class CartPage extends Page {
   cartItemData: selectedFoodInfo[];
+  private CART_KEY: string;
 
   constructor(containerId: string) {
     super(containerId, template);
     this.cartItemData = [];
+    this.CART_KEY = "tfd-cart";
   }
 
   async renderCartElement(): Promise<string> {
     // 로컬스토리지에서 받은 데이터
-    const getCartItemData =
-      JSON.parse(localStorage.getItem("cart") as string) || [];
+    const getCartItemData = LocalStorageUtil.get<selectedFoodInfo[]>(
+      this.CART_KEY
+    );
 
     const cartItemData = await Promise.all(
       getCartItemData.map((cart: selectedFoodInfo) =>
@@ -58,14 +62,13 @@ export default class CartPage extends Page {
 
   removeFromCart(menuId: string | null) {
     if (!menuId) return;
-    let cart: selectedFoodInfo[] =
-      JSON.parse(localStorage.getItem("cart") as string) || [];
+    let cart = LocalStorageUtil.get<selectedFoodInfo[]>(this.CART_KEY);
 
     // 아이템 제거
     cart = cart.filter((item) => item.foodId !== menuId);
 
     // 변경된 장바구니 데이터를 다시 로컬 스토리지에 저장
-    localStorage.setItem("cart", JSON.stringify(cart));
+    LocalStorageUtil.set(this.CART_KEY, cart);
   }
 
   async updateUI(): Promise<void> {
