@@ -48,6 +48,8 @@ export default class FoodDetailPage extends Page {
       foodId: null,
       optionIds: [],
     };
+    selectedInfo.foodId = this.foodId;
+    selectedInfo.optionIds = this.optionId;
 
     /* 
     !!! 로컬스토리지 JSON.Parse 모듈화 !!!
@@ -57,8 +59,6 @@ export default class FoodDetailPage extends Page {
     - 예외처리, 에러 상황에서 어떻게 처리할 것인지에 대해 고민 -> 개선하기
     */
     let cartItems = LocalStorageUtil.get<selectedFoodInfo[]>(this.CART_KEY, []);
-    selectedInfo.foodId = this.foodId;
-    selectedInfo.optionIds = this.optionId;
     cartItems.push(selectedInfo);
     LocalStorageUtil.set(this.CART_KEY, cartItems);
     alert("장바구니에 추가했습니다.");

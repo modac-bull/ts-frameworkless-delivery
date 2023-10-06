@@ -28,19 +28,24 @@ export default class CartPage extends Page {
 
   async renderCartElement(): Promise<string> {
     // 로컬스토리지에서 받은 데이터
-    const getCartItemData = LocalStorageUtil.get<selectedFoodInfo[]>(
-      this.CART_KEY
-    );
-
-    const cartItemData = await Promise.all(
-      getCartItemData.map((cart: selectedFoodInfo) =>
-        getFoodDetailByIdx(Number(cart.foodId))
-      )
-    );
-    const cartItemElement = cartItemData
-      .map((cart, idx) => cartItem(cart, getCartItemData[idx].optionIds))
-      .join("");
-    return cartItemElement;
+    try {
+      const getCartItemData = LocalStorageUtil.get<selectedFoodInfo[]>(
+        this.CART_KEY,
+        []
+      );
+      const cartItemData = await Promise.all(
+        getCartItemData.map((cart: selectedFoodInfo) =>
+          getFoodDetailByIdx(Number(cart.foodId))
+        )
+      );
+      const cartItemElement = cartItemData
+        .map((cart, idx) => cartItem(cart, getCartItemData[idx].optionIds))
+        .join("");
+      return cartItemElement;
+    } catch (error) {
+      console.log(error);
+      return "<p>에러가 발생했습니다.</p>";
+    }
   }
 
   defineEventMap() {
