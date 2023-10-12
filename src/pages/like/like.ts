@@ -1,6 +1,6 @@
 import { selectedFoodInfo } from "@/apis/food/types";
 // import likeItem from "@/components/like/likeItem";
-import header from "@/components/header/header";
+// import header from "@/components/header/header";
 import styles from "./like.scss";
 import Page from "@/core/Page";
 import { getStoreDetailByIdx } from "@/apis/store/store";
@@ -45,21 +45,19 @@ export default class LikePage extends Page {
     const likeStoreItemElement = likeStoreItemData
       .map((cart) => likeItem(cart))
       .join("");
-    console.log("render", likeStoreItemData);
     return likeStoreItemElement;
   }
 
   async updateData(): Promise<void> {
-    const headerElement = header({ title: "찜 페이지", hasBack: true });
     const likeElement = await this.renderLikeElement();
     const state = [
       {
         key: "header",
-        component: headerElement,
+        data: { title: "찜 페이지", hasBack: true },
       },
       {
         key: "like_item",
-        component: likeElement,
+        data: likeElement,
       },
     ];
     this.componentMap.push(...state);

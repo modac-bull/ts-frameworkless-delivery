@@ -2,7 +2,6 @@ import { getFoodDetailByIdx } from "@/apis/food/food";
 import { selectedFoodInfo } from "@/apis/food/types";
 import cartItem from "@/components/cart/cartItem";
 // import cartItem from "@/components/cart/cartItem";
-import header from "@/components/header/header";
 import styles from "./cart.scss";
 import Page from "@/core/Page";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
@@ -78,20 +77,19 @@ export default class CartPage extends Page {
   }
 
   async updateData(): Promise<void> {
-    const headerElement = header({ title: "장바구니 페이지", hasBack: true });
 
-    const cartElement = await this.renderCartElement();
+    const cartData = await this.renderCartElement();
 
-    const data = [
+    const state = [
       {
         key: "header",
-        component: headerElement,
+        data: { title: "장바구니 페이지", hasBack: true },
       },
       {
         key: "cart_item",
-        component: cartElement,
+        data: cartData,
       },
     ];
-    this.componentMap.push(...data);
+    this.componentMap.push(...state);
   }
 }

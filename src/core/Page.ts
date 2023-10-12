@@ -1,6 +1,12 @@
+import foodInfo from "@/components/food/foodInfo";
+import foodItem from "@/components/food/foodItem";
+import foodOption from "@/components/food/foodOption";
+import foodPrice from "@/components/food/foodPrice";
+import header from "@/components/header/header";
+import storeInfo from "@/components/store/storeInfo";
 import { Params } from "@/router/router";
 type EventMapType = { [key: string]: (event: Event) => void };
-type ComponentMapType = { key: string; component: string }[];
+type ComponentMapType = { key: string; data: any }[];
 export default abstract class Page {
   /* 페이지 HTML 템플릿 */
   private readonly template: string;
@@ -54,12 +60,45 @@ export default abstract class Page {
     3. element는 데이터가 아니다. 
      */
     let updatedTemplate = this.template;
-    console.log(this.componentMap);
+
     this.componentMap.map((component) => {
+      let resultComponent = "";
+
+      switch (component.key) {
+        case "header":
+          resultComponent = header(component.data);
+          break;
+        case "store_info":
+          resultComponent = storeInfo(
+            component.data.detail,
+            component.data.isLike
+          );
+          break;
+        case "food_info":
+          resultComponent = foodInfo(component.data);
+          break;
+        case "food_list":
+          resultComponent = component.data
+            .map((food: any) => foodItem(food))
+            .join("");
+          break;
+        case "food_options":
+          resultComponent = component.data
+            .map((food: any) => foodOption(food))
+            .join("");
+          break;
+        case "bottom_sheet":
+          resultComponent = foodPrice(component.data);
+          break;
+        // 추가적인 component.key들을 위한 케이스
+        default:
+          break;
+      }
+
       updatedTemplate = this.setTemplateData(
         updatedTemplate,
         component.key,
-        component.component
+        resultComponent
       );
     });
 

@@ -1,10 +1,6 @@
 // import { Params } from "@/router/router";
-import header from "@/components/header/header";
 import styles from "./detail.scss";
 import { getFoodDetailByIdx } from "@/apis/food/food";
-import foodInfo from "@/components/food/foodInfo";
-import foodOption from "@/components/food/foodOption";
-import foodPrice from "@/components/food/foodPrice";
 import Page from "@/core/Page";
 import { selectedFoodInfo } from "@/apis/food/types";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
@@ -102,35 +98,27 @@ export default class FoodDetailPage extends Page {
     this.foodId = idx;
     this.optionId = [];
 
-    const headerElement = header({ title: "음식 상세", hasBack: true });
-
     const foodDetailRes = await getFoodDetailByIdx(Number(idx));
     this.totalPrice = foodDetailRes.price;
-    const foodInfoElement = foodInfo(foodDetailRes);
-
-    const optionInfoElement =
-      foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
-      "<p>옵션이 없습니다.</p>";
 
     const SELECTED_PRICE = this.totalPrice;
-    const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
 
     const state = [
       {
         key: "header",
-        component: headerElement,
+        data: { title: "음식 상세", hasBack: true },
       },
       {
         key: "food_info",
-        component: foodInfoElement,
+        data: foodDetailRes,
       },
       {
         key: "food_options",
-        component: optionInfoElement,
+        data: foodDetailRes.options,
       },
       {
         key: "bottom_sheet",
-        component: bottomSheetElement,
+        data: { price: SELECTED_PRICE },
       },
     ];
     this.componentMap.push(...state);

@@ -2,10 +2,10 @@ import styles from "./detail.scss";
 import storeStyles from "../../components/store/storeInfo.scss";
 
 import header from "@/components/header/header";
-import foodItem from "@/components/food/foodItem";
+// import foodItem from "@/components/food/foodItem";
 import { getFoodListDataByIdx } from "@/apis/food/food";
 import Page from "@/core/Page";
-import storeInfo from "@/components/store/storeInfo";
+// import storeInfo from "@/components/store/storeInfo";
 import { getStoreDetailByIdx } from "@/apis/store/store";
 import {
   deleteLikeStore,
@@ -104,21 +104,21 @@ export default class StoreDetailPage extends Page {
     const headerElement = header({ title: "가게 상세", hasBack: true });
 
     const storeDetail = await getStoreDetailByIdx(Number(id));
-    const storeInfoElement = storeInfo(storeDetail, this.isLike);
-    const foodListElement = foodListData.map((food) => foodItem(food)).join("");
+    // const storeInfoElement = storeInfo(storeDetail, this.isLike);
+    // const foodListElement = foodListData.map((food) => foodItem(food)).join("");
 
     const state = [
       {
         key: "header",
-        component: headerElement,
+        data: headerElement,
       },
       {
         key: "store_info",
-        component: storeInfoElement,
+        data: storeDetail,
       },
       {
         key: "food_list",
-        component: foodListElement,
+        data: foodListData,
       },
     ];
     this.componentMap.push(...state);

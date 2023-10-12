@@ -1,8 +1,6 @@
-import header from "@/components/header/header";
 import styles from "./home.scss";
 import Page from "@/core/Page";
 import { getStoreListData } from "@/apis/store/store";
-import storeItem from "@/components/store/storeItem";
 
 const template = `
 {{__header__}}
@@ -20,19 +18,16 @@ export default class HomePage extends Page {
   }
 
   async updateData(): Promise<void> {
-    const res = await getStoreListData();
-    const foodlistElement = res.map((store) => storeItem(store)).join("");
-
-    const headerElement = header({ title: "메인", hasBack: false });
+    const storeListData = await getStoreListData();
 
     const state = [
       {
         key: "header",
-        component: headerElement,
+        data: { title: "메인", hasBack: false },
       },
       {
         key: "food_list",
-        component: foodlistElement,
+        data: storeListData,
       },
     ];
     this.componentMap.push(...state);
