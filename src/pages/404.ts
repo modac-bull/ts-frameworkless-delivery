@@ -9,7 +9,7 @@ export default class NotFoundPage extends Page {
   constructor(containerId: string) {
     super(containerId, template);
   }
-  async updateUI(): Promise<void> {
-    this.updatePage();
+  async updateData(): Promise<void> {
+    this.updateHTML();
   }
 }

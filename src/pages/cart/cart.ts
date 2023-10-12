@@ -62,7 +62,7 @@ export default class CartPage extends Page {
     if (target.closest("#btn-remove-cart")) {
       alert("장바구니에서 제거했습니다.");
       this.removeFromCart(selectedFoodId);
-      await this.updateUI();
+      await this.render();
     }
   }
 
@@ -77,10 +77,21 @@ export default class CartPage extends Page {
     LocalStorageUtil.set(this.localStorage_key, cart);
   }
 
-  async updateUI(): Promise<void> {
+  async updateData(): Promise<void> {
     const headerElement = header({ title: "장바구니 페이지", hasBack: true });
-    this.setTemplateData("header", headerElement);
-    this.setTemplateData("cart_item", await this.renderCartElement());
-    this.updatePage();
+
+    const cartElement = await this.renderCartElement();
+
+    const data = [
+      {
+        key: "header",
+        component: headerElement,
+      },
+      {
+        key: "cart_item",
+        component: cartElement,
+      },
+    ];
+    this.componentMap.push(...data);
   }
 }

@@ -14,7 +14,10 @@ const template = `{{__header__}}
   <div class='area'>
     {{__food_info__}}
 
-    {{__food_options__}}
+    <div class=${styles["option-container"]}>
+      <p class=${styles["title-option"]}>추가선택</p>
+      {{__food_options__}}
+    </div>
 
     <div class='divider-st1'></div>
 
@@ -94,34 +97,42 @@ export default class FoodDetailPage extends Page {
     }
   }
 
-  async updateUI(): Promise<void> {
+  async updateData(): Promise<void> {
     const idx = this.params?.["foodId"]! as string;
     this.foodId = idx;
     this.optionId = [];
 
     const headerElement = header({ title: "음식 상세", hasBack: true });
-    this.setTemplateData("header", headerElement);
 
     const foodDetailRes = await getFoodDetailByIdx(Number(idx));
     this.totalPrice = foodDetailRes.price;
-
     const foodInfoElement = foodInfo(foodDetailRes);
-    this.setTemplateData("food_info", foodInfoElement);
 
     const optionInfoElement =
       foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
       "<p>옵션이 없습니다.</p>";
-    this.setTemplateData(
-      "food_options",
-      `<div class=${styles["option-container"]}>
-        <p class=${styles["title-option"]}>추가선택</p>
-        ${optionInfoElement}
-      </div>` ?? ""
-    );
 
     const SELECTED_PRICE = this.totalPrice;
     const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
-    this.setTemplateData("bottom_sheet", bottomSheetElement);
-    this.updatePage();
+
+    const data = [
+      {
+        key: "header",
+        component: headerElement,
+      },
+      {
+        key: "food_info",
+        component: foodInfoElement,
+      },
+      {
+        key: "food_options",
+        component: optionInfoElement,
+      },
+      {
+        key: "bottom_sheet",
+        component: bottomSheetElement,
+      },
+    ];
+    this.componentMap.push(...data);
   }
 }

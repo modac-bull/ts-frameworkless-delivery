@@ -29,7 +29,6 @@ export default class LikePage extends Page {
   }
 
   async renderLikeElement() {
-    console.log("호출");
     // 로컬스토리지에서 받은 데이터
     const getLikeStoreItemData = LocalStorageUtil.get<string[]>(
       this.localStorage_key,
@@ -50,11 +49,19 @@ export default class LikePage extends Page {
     return likeStoreItemElement;
   }
 
-  async updateUI(): Promise<void> {
+  async updateData(): Promise<void> {
     const headerElement = header({ title: "찜 페이지", hasBack: true });
-    this.setTemplateData("header", headerElement);
-    // 좋아요 리스트 렌더링
-    this.setTemplateData("like_item", await this.renderLikeElement());
-    this.updatePage();
+    const likeElement = await this.renderLikeElement();
+    const data = [
+      {
+        key: "header",
+        component: headerElement,
+      },
+      {
+        key: "like_item",
+        component: likeElement,
+      },
+    ];
+    this.componentMap.push(...data);
   }
 }

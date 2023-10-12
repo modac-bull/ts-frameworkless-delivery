@@ -1,16 +1,21 @@
 import { Params } from "@/router/router";
 type EventMapType = { [key: string]: (event: Event) => void };
+type ComponentMapType = { key: string; component: string }[];
 export default abstract class Page {
   /* 페이지 HTML 템플릿 */
   private readonly template: string;
+  /* 실시간으로 렌더링될 템플릿 */
+  private renderTemplate: string;
+  /* 페이지에 전달된 파라미터 저장 */
+
   /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
   private readonly container: HTMLElement;
   /* 실시간으로 렌더링될 템플릿 */
-  private renderTemplate: string;
   /* 페이지에 전달된 파라미터 저장 */
   private _params: Params | null = null;
   /* 이벤트 핸들러 함수 저장 */
   private boundEventHandlers: EventMapType = {};
+  protected componentMap: ComponentMapType = [];
 
   get params(): Params | null {
     return this._params;
@@ -41,9 +46,20 @@ export default abstract class Page {
   }
 
   /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
-  protected updatePage(): void {
+  protected updateHTML(): void {
+    /* 
+    1. 템플릿과 관련된 모든 작업을 한다.
+    2. renderTemplate은 없앤다.
+    - 맵, 변수
+    3. element는 데이터가 아니다. 
+     */
+    this.componentMap.map((component) => {
+      this.setTemplateData(component.key, component.component);
+    });
+
     this.container.innerHTML = this.renderTemplate;
     this.renderTemplate = this.template;
+    this.componentMap = [];
   }
 
   /**
@@ -96,7 +112,7 @@ export default abstract class Page {
    * UI 업데이트를 위한 추상 메서드
    * 하위 클래스에서 구현
    */
-  abstract updateUI(): Promise<void>;
+  abstract updateData(): Promise<void>;
 
   /* 
   updateUI 호출, 이벤트를 바인딩
@@ -104,7 +120,11 @@ export default abstract class Page {
   */
   async render(): Promise<void> {
     try {
-      await this.updateUI(); // updateUI 호출
+      await this.updateData(); // updateUI 호출
+
+      // 별도의 렌더링 하는 메서드 이곳에서 호출
+      this.updateHTML();
+
       this.bindEvents();
     } catch (error) {
       console.log(error);
