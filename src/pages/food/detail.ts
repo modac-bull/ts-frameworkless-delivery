@@ -115,7 +115,7 @@ export default class FoodDetailPage extends Page {
     const SELECTED_PRICE = this.totalPrice;
     const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
 
-    const data = [
+    const state = [
       {
         key: "header",
         component: headerElement,
@@ -133,6 +133,6 @@ export default class FoodDetailPage extends Page {
         component: bottomSheetElement,
       },
     ];
-    this.componentMap.push(...data);
+    this.componentMap.push(...state);
   }
 }

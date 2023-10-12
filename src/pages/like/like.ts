@@ -52,7 +52,7 @@ export default class LikePage extends Page {
   async updateData(): Promise<void> {
     const headerElement = header({ title: "찜 페이지", hasBack: true });
     const likeElement = await this.renderLikeElement();
-    const data = [
+    const state = [
       {
         key: "header",
         component: headerElement,
@@ -62,6 +62,6 @@ export default class LikePage extends Page {
         component: likeElement,
       },
     ];
-    this.componentMap.push(...data);
+    this.componentMap.push(...state);
   }
 }

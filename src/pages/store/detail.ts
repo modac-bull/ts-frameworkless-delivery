@@ -107,7 +107,7 @@ export default class StoreDetailPage extends Page {
     const storeInfoElement = storeInfo(storeDetail, this.isLike);
     const foodListElement = foodListData.map((food) => foodItem(food)).join("");
 
-    const data = [
+    const state = [
       {
         key: "header",
         component: headerElement,
@@ -121,7 +121,7 @@ export default class StoreDetailPage extends Page {
         component: foodListElement,
       },
     ];
-    this.componentMap.push(...data);
+    this.componentMap.push(...state);
     console.log(this.componentMap);
   }
 }

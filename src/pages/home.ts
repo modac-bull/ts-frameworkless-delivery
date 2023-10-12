@@ -21,11 +21,11 @@ export default class HomePage extends Page {
 
   async updateData(): Promise<void> {
     const res = await getStoreListData();
-
-    const headerElement = header({ title: "메인", hasBack: false });
     const foodlistElement = res.map((store) => storeItem(store)).join("");
 
-    const data = [
+    const headerElement = header({ title: "메인", hasBack: false });
+
+    const state = [
       {
         key: "header",
         component: headerElement,
@@ -35,6 +35,6 @@ export default class HomePage extends Page {
         component: foodlistElement,
       },
     ];
-    this.componentMap.push(...data);
+    this.componentMap.push(...state);
   }
 }

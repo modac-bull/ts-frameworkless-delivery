@@ -4,9 +4,6 @@ type ComponentMapType = { key: string; component: string }[];
 export default abstract class Page {
   /* 페이지 HTML 템플릿 */
   private readonly template: string;
-  /* 실시간으로 렌더링될 템플릿 */
-  private renderTemplate: string;
-  /* 페이지에 전달된 파라미터 저장 */
 
   /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
   private readonly container: HTMLElement;
@@ -37,12 +34,15 @@ export default abstract class Page {
 
     this.container = containerElement;
     this.template = template;
-    this.renderTemplate = template;
   }
 
   /* 템플릿에 데이터를 입힌 템플릿으로 교체 */
-  protected setTemplateData(key: string, value: string): void {
-    this.renderTemplate = this.renderTemplate.replace(`{{__${key}__}}`, value);
+  protected setTemplateData(
+    template: string,
+    key: string,
+    value: string
+  ): string {
+    return template.replace(`{{__${key}__}}`, value);
   }
 
   /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
@@ -53,12 +53,17 @@ export default abstract class Page {
     - 맵, 변수
     3. element는 데이터가 아니다. 
      */
+    let updatedTemplate = this.template;
+    console.log(this.componentMap);
     this.componentMap.map((component) => {
-      this.setTemplateData(component.key, component.component);
+      updatedTemplate = this.setTemplateData(
+        updatedTemplate,
+        component.key,
+        component.component
+      );
     });
 
-    this.container.innerHTML = this.renderTemplate;
-    this.renderTemplate = this.template;
+    this.container.innerHTML = updatedTemplate;
     this.componentMap = [];
   }
 
