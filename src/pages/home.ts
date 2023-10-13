@@ -6,6 +6,7 @@ import { getStoreListData } from "@/apis/store/store";
 import Handlebars from "handlebars";
 
 const template = `
+{{!헤더}}
 <header class=${headerStyle["header-container"]}>
   <div class=${headerStyle["header-inner"]}>
     <div class=${headerStyle["header-left"]}>
@@ -30,6 +31,7 @@ const template = `
     </div>
   </div>
 </header>
+{{! /.헤더}}
 
 <div class='area'>
   <div class=${styles["main"]}>
