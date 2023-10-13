@@ -1,27 +1,115 @@
 import styles from "./detail.scss";
-import storeStyles from "../../components/store/storeInfo.scss";
+import headerStyle from "@/components/header/header.scss";
+import storeInfoStyles from "@/components/store/storeInfo.scss";
+import foodItemStyles from "@/components/food/foodItem.scss";
 
-import header from "@/components/header/header";
-import foodItem from "@/components/food/foodItem";
-import { getFoodListDataByIdx } from "@/apis/food/food";
+import storeStyles from "../../components/store/storeInfo.scss";
+import Handlebars from "handlebars";
+
+// import header from "@/components/header/header";
+// import foodItem from "@/components/food/foodItem";
+// import { getFoodListDataByIdx } from "@/apis/food/food";
 import Page from "@/core/Page";
-import storeInfo from "@/components/store/storeInfo";
+// import storeInfo from "@/components/store/storeInfo";
 import { getStoreDetailByIdx } from "@/apis/store/store";
 import {
   deleteLikeStore,
   getLikeStoreList,
   postLikeStore,
 } from "@/apis/like/like";
+import { getFoodListDataByIdx } from "@/apis/food/food";
 
-const template = `{{__header__}}
+const template = `
+{{! 헤더 }}
+<header class=${headerStyle["header-container"]}>
+<div class=${headerStyle["header-inner"]}>
+  <div class=${headerStyle["header-left"]}>
+  {{#if header/hasBackButton}}
+    <button class=${headerStyle["button-back"]} >
+      <i id="back-button" class="fa fa-chevron-left fa-lg"></i>
+    </button>
+  {{/if}}
+
+  </div>
+  <h1>{{header/title}}</h1>
+  <div class="${headerStyle["button-wrapper"]} ${headerStyle["header-right"]}">
+    <button data-navigate="/" class=${headerStyle["button-home"]}>
+      <i class="fa fa-home fa-lg"></i>
+    </button>
+    <button data-navigate="/like" class=${headerStyle["button-like"]}>
+      <i class="fa fa-heart fa-lg"></i>
+    </button>
+    <button data-navigate="/cart" class=${headerStyle["button-cart"]} >
+      <i class="fa fa-shopping-cart fa-lg"></i>
+    </button>
+  </div>
+</div>
+</header>
+{{! /.헤더}}
+
   <div class='area'>
-    {{__store_info__}}
-
+    {{! 가게 상세 }}
+    <div class=${storeInfoStyles["store-info-container"]}>
+      <div class=${storeInfoStyles["img-wrap"]}>
+        <img src={{storeInfo/data/thumImgUrls.[0]}} />
+        {{#if storeInfo/isLike}}
+          <button type='button' id='btnLike' class='${storeInfoStyles["btn-like"]} ${storeInfoStyles["active"]} '>
+            <i class="fa fa-heart fa-lg"></i>
+          </button>
+        {{else}}
+          <button type='button' id='btnLike' class='${storeInfoStyles["btn-like"]}'>
+            <i class="fa fa-heart fa-lg"></i>
+          </button>
+        {{/if}}
+      </div>
+      <div class=${storeInfoStyles["info-wrap"]}>
+        <h2 class=${storeInfoStyles["title-store"]}>{{storeInfo/data/title}}</h2>
+        <span class=${storeInfoStyles["grade"]}>
+          <i class="fa fa-star fa-lg"></i>
+          {{storeInfo/review_point}} ({{storeInfo/data/review_cnt}})
+        </span>
+        <div class=${storeInfoStyles["review-info"]}>
+          <p> 최근리뷰 {{storeInfo/data/review_cnt}}</p>
+          <p> 최근사장님댓글 {{storeInfo/data/comments}}</p>
+        </div>
+      </div>
+      <div class=${storeInfoStyles["deliver-info"]}>
+        <dl class=${storeInfoStyles["text-info"]}>
+          <dt>최소주문금액</dt>
+          <dd>{{storeInfo/data/minimum_price}}원</dd>
+        </dl>
+        <dl class=${storeInfoStyles["text-info"]}>
+          <dt>결제 방법</dt>
+          <dd>바로결제, 만나서결제, 예약가능</dd>
+        </dl>
+        <dl class=${storeInfoStyles["text-info"]}>
+          <dt>배달시간</dt>
+          <dd>{{storeInfo/data/delivery_time.[0]}}~{{storeInfo/data/delivery_time.[1]}}분 소요 예상</dd>
+        </dl>
+      </div>
+    </div>
+    {{! /.가게 상세 }}
+    
     <div class='divider-st1'></div>
 
     <div class="${styles["food-list-container"]}">
       <p class="${styles["title-menu"]}">추천 메뉴</p>
-      {{__food_list__}}
+
+      {{! 음식 메뉴}}
+      {{#each foodLists}}
+        <div data-navigate=/food/{{id}} class=${foodItemStyles["food-item-wrapper"]}>
+          <div class=${foodItemStyles["txt-wrap"]}>
+            <p class=${foodItemStyles["title-food"]}>{{title}}</p>
+            <p class=${foodItemStyles["desc-food"]}>{{desc}}</p>
+            <p class=${foodItemStyles["price-food"]}>{{price}}원</p>
+          </div>
+          <div class=${foodItemStyles["img-wrap"]}>
+            <img src={{thumbImg}}/>
+          </div>
+        </div>
+      {{/each}}
+      {{! /.음식 메뉴}}
+
     </div>
   </div>
   `;
@@ -99,29 +187,41 @@ export default class StoreDetailPage extends Page {
 
     const id = this.params?.["storeId"]! as string;
 
-    console.log("호출?", id);
     const foodListData = await getFoodListDataByIdx(id);
-    const headerElement = header({ title: "가게 상세", hasBack: true });
+    // const headerElement = header({ title: "가게 상세", hasBack: true });
 
     const storeDetail = await getStoreDetailByIdx(Number(id));
-    const storeInfoElement = storeInfo(storeDetail, this.isLike);
-    const foodListElement = foodListData.map((food) => foodItem(food)).join("");
+    // const storeInfoElement = storeInfo(storeDetail, this.isLike);
+    // const foodListElement = foodListData.map((food) => foodItem(food)).join("");
 
-    const state = [
-      {
-        key: "header",
-        component: headerElement,
+    const context = {
+      header: {
+        hasBackButton: true,
+        title: "가게 상세",
       },
-      {
-        key: "store_info",
-        component: storeInfoElement,
+      storeInfo: {
+        data: storeDetail,
+        isLike: this.isLike,
       },
-      {
-        key: "food_list",
-        component: foodListElement,
-      },
-    ];
-    this.componentMap.push(...state);
-    console.log(this.componentMap);
+      foodLists: foodListData,
+    };
+    this.compiledTemplate = Handlebars.compile(template)(context);
+
+    // const state = [
+    //   {
+    //     key: "header",
+    //     component: headerElement,
+    //   },
+    //   {
+    //     key: "store_info",
+    //     component: storeInfoElement,
+    //   },
+    //   {
+    //     key: "food_list",
+    //     component: foodListElement,
+    //   },
+    // ];
+    // this.componentMap.push(...state);
+    // console.log(this.componentMap);
   }
 }
