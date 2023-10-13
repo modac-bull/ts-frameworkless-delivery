@@ -7,8 +7,6 @@ export default abstract class Page {
   private readonly container: HTMLElement;
   /* 페이지 HTML 템플릿 */
   private readonly template: string;
-  /* handlebar로 컴파일된 template */
-  protected compiledTemplate: string;
   /* handlebar에 사용될 context 객체 */
   protected context: { [key: string]: unknown };
   /* 페이지에 전달된 파라미터 저장 */
@@ -36,14 +34,13 @@ export default abstract class Page {
 
     this.container = containerElement;
     this.template = template;
-    this.compiledTemplate = "";
     this.context = {};
   }
 
-  /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
+  /* 페이지 업데이트 + handlebar 컴파일 템플릿으로 페이지 표시 */
   protected updateHTML(): void {
-    this.compiledTemplate = Handlebars.compile(this.template)(this.context);
-    this.container.innerHTML = this.compiledTemplate;
+    
+    this.container.innerHTML = Handlebars.compile(this.template)(this.context);
   }
 
   /**

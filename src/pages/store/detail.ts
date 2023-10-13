@@ -44,6 +44,7 @@ const template = `
           id=id
           title=title
           desc=desc
+          {{! helper로 toLocalsString 역할하는 기능 추가}}
           price=price
           thumbImg=thumbImg
         }}
