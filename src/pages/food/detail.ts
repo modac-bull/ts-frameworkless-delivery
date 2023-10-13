@@ -1,8 +1,8 @@
 import styles from "./detail.scss";
-import headerStyle from "@/components/header/header.scss";
-import foodInfoStyle from "@/components/food/foodInfo.scss";
-import foodOptionsStyle from "@/components/food/foodOption.scss";
-import foodPriceStyle from "@/components/food/foodPrice.scss";
+import headerTemplate from "@/components/header/header";
+import foodInfoTemplate from "@/components/food/foodInfo";
+import foodOptionTemplate from "@/components/food/foodOption";
+import foodPriceTemplate from "@/components/food/foodPrice";
 
 import { getFoodDetailByIdx } from "@/apis/food/food";
 import Page from "@/core/Page";
@@ -10,50 +10,23 @@ import { selectedFoodInfo } from "@/apis/food/types";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
+import Handlebars from "handlebars";
+
+Handlebars.registerPartial("header", headerTemplate);
+Handlebars.registerPartial("foodInfo", foodInfoTemplate);
+Handlebars.registerPartial("foodOption", foodOptionTemplate);
+Handlebars.registerPartial("foodPrice", foodPriceTemplate);
+
 const template = `
 {{! 헤더 }}
-<header class=${headerStyle["header-container"]}>
-<div class=${headerStyle["header-inner"]}>
-  <div class=${headerStyle["header-left"]}>
-  {{#if header/hasBackButton}}
-    <button class=${headerStyle["button-back"]} >
-      <i id="back-button" class="fa fa-chevron-left fa-lg"></i>
-    </button>
-  {{/if}}
-
-  </div>
-  <h1>{{header/title}}</h1>
-  <div class="${headerStyle["button-wrapper"]} ${headerStyle["header-right"]}">
-    <button data-navigate="/" class=${headerStyle["button-home"]}>
-      <i class="fa fa-home fa-lg"></i>
-    </button>
-    <button data-navigate="/like" class=${headerStyle["button-like"]}>
-      <i class="fa fa-heart fa-lg"></i>
-    </button>
-    <button data-navigate="/cart" class=${headerStyle["button-cart"]} >
-      <i class="fa fa-shopping-cart fa-lg"></i>
-    </button>
-  </div>
-</div>
-</header>
+{{> header hasBackButton=header/hasBackButton title=header/title }}
 {{! /.헤더}}
 
   <div class='area'>
     {{!음식 정보}}
-    <div class=${foodInfoStyle["food-info-container"]}>
-      <div class=${foodInfoStyle["img-wrap"]}>
-        <img src={{foodInfo/data/thumbImg}} />
-      </div>
-      <div class=${foodInfoStyle["info-wrap"]}>
-        <h2 class=${foodInfoStyle["title-food"]}>{{foodInfo/data/title}}</h2>
-        <p class=${foodInfoStyle["desc-food"]}>{{foodInfo/data/desc}}</p>
-        <div class=${foodInfoStyle["price-wrap"]}>
-          <p class=${foodInfoStyle["title-feature"]}>가격</p>
-          <p class=${foodInfoStyle["text-price"]}>{{foodInfo/data/price}}</p>
-        </div>
-      </div>
-      <div class='divider-st1'></div>
-    </div>
+    {{>foodInfo 
+      data=foodInfo/data
+    }}
     {{!/.음식 정보}}
 
     
@@ -61,13 +34,11 @@ const template = `
       <p class=${styles["title-option"]}>추가선택</p>
       {{! 옵션 정보}}
       {{#each foodOptionLists}}
-      <div class=${foodOptionsStyle["food-option-container"]}>
-        <div class=${foodOptionsStyle["form-label"]} id='price-option'>
-          <input  name={{id}} value={{price}} id={{id}} type='checkbox' class=${foodOptionsStyle["checkbox-st1"]}/>
-          <label for={{id}}>{{title}}</label>
-        </div>
-        <p class=${foodOptionsStyle["text-price"]}>+{{price}}원</p>
-      </div>
+        {{>foodOption 
+          id=id
+          price=price
+          title=title
+        }}
       {{/each}}
       {{! /.옵션 정보}}
     </div>
@@ -75,9 +46,9 @@ const template = `
     <div class='divider-st1'></div>
 
     {{! 하단 가격 }}
-    <div class=${foodPriceStyle["bottom-sheet"]}>
-      <button id='btn-add-cart' type='button' class=${foodPriceStyle["button-primary"]}><span id="total-price" >{{foodPrice}}</span>원 담기</button>
-    </div>
+    {{>foodPrice
+      foodPrice=foodPrice
+    }}
     {{! /.하단 가격 }}
   </div>
   `;

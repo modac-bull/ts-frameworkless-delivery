@@ -1,6 +1,7 @@
 import styles from "./cart.scss";
-import headerStyle from "@/components/header/header.scss";
-import cartItemStyle from "@/components/cart/cartItem.scss";
+
+import headerTemplate from "@/components/header/header";
+import cartItemTemplate from "@/components/cart/cartItem";
 
 import { getFoodDetailByIdx } from "@/apis/food/food";
 import { FoodDetailItem, selectedFoodInfo } from "@/apis/food/types";
@@ -8,60 +9,28 @@ import Page from "@/core/Page";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
+import Handlebars from "handlebars";
+
+Handlebars.registerPartial("header", headerTemplate);
+Handlebars.registerPartial("cartItem", cartItemTemplate);
+
 const template = `
 {{!헤더}}
-<header class=${headerStyle["header-container"]}>
-  <div class=${headerStyle["header-inner"]}>
-    <div class=${headerStyle["header-left"]}>
-    {{#if header/hasBackButton}}
-      <button class=${headerStyle["button-back"]} >
-        <i id="back-button" class="fa fa-chevron-left fa-lg"></i>
-      </button>
-    {{/if}}
-
-    </div>
-    <h1>{{header/title}}</h1>
-    <div class="${headerStyle["button-wrapper"]} ${headerStyle["header-right"]}">
-      <button data-navigate="/" class=${headerStyle["button-home"]}>
-        <i class="fa fa-home fa-lg"></i>
-      </button>
-      <button data-navigate="/like" class=${headerStyle["button-like"]}>
-        <i class="fa fa-heart fa-lg"></i>
-      </button>
-      <button data-navigate="/cart" class=${headerStyle["button-cart"]} >
-        <i class="fa fa-shopping-cart fa-lg"></i>
-      </button>
-    </div>
-  </div>
-</header>
+{{> header hasBackButton=header/hasBackButton title=header/title }}
 {{! /.헤더}}
 
 <div class='area'>
   <div class="${styles["cart-tiems-container"]} cart-container">
     {{! 장바구니 음식 목록}}
     {{#each cartItemLists}}
-    <div class=${cartItemStyle["cart-item-wrapper"]}>
-      <div class=${cartItemStyle["img-wrapper"]}>
-        <img src={{thumbImg}}/>
-      </div>
-      <div class=${cartItemStyle["info-wrapper"]}>
-
-        <button class='${cartItemStyle["btn-close"]}' id='btn-remove-cart'>
-          <i class="fa fa-times fa-lg" data-id={{id}}></i>
-        </button>
-        <h3 class=${cartItemStyle["title-food"]}>{{title}}</h3>
-        <ul class=${cartItemStyle["desc-wrap"]}>
-          <li class=${cartItemStyle["text-price"]}>가격 : {{price}}원</li>
-          <li class=${cartItemStyle["text-desc"]}>{{desc}}</li>
-          <li class=${cartItemStyle["text-options"]}>
-            선택된 옵션 : 
-            {{#each options}}
-              {{title}}
-            {{/each}}
-          </li>
-        </ul>
-      </div>
-    </div>
+      {{> cartItem
+        id=id
+        thumbImg=thumbImg
+        title=title
+        price=price
+        desc=desc
+        options=options
+      }}
     {{/each}}
     {{! /.장바구니 음식 목록}}
   </div>

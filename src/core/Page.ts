@@ -111,7 +111,7 @@ export default abstract class Page {
       this.bindEvents();
     } catch (error) {
       console.log(error);
-      window.location.href = "/404";
+      // window.location.href = "/404";
     }
   }
 }
