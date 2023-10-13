@@ -8,8 +8,6 @@ import { getStoreDetailByIdx } from "@/apis/store/store";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
-import Handlebars from "handlebars";
-
 const template = `
 {{!헤더}}
 <header class=${headerStyle["header-container"]}>
@@ -113,6 +111,6 @@ export default class LikePage extends Page {
       },
       likeItemlists: likeStoreItemData,
     };
-    this.compiledTemplate = Handlebars.compile(template)(context);
+    this.context = context;
   }
 }

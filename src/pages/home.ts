@@ -3,7 +3,6 @@ import headerStyle from "@/components/header/header.scss";
 import storeItemStyle from "@/components/store/storeItem.scss";
 import Page from "@/core/Page";
 import { getStoreListData } from "@/apis/store/store";
-import Handlebars from "handlebars";
 
 const template = `
 {{!헤더}}
@@ -87,6 +86,6 @@ export default class HomePage extends Page {
       },
       storeLists: storeListData,
     };
-    this.compiledTemplate = Handlebars.compile(template)(context);
+    this.context = context;
   }
 }

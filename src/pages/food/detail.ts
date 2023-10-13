@@ -9,7 +9,6 @@ import Page from "@/core/Page";
 import { selectedFoodInfo } from "@/apis/food/types";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
-import Handlebars from "handlebars";
 
 const template = `
 {{! 헤더 }}
@@ -167,6 +166,6 @@ export default class FoodDetailPage extends Page {
       foodOptionLists: foodInfoData.options,
       foodPrice: this.totalPrice,
     };
-    this.compiledTemplate = Handlebars.compile(template)(context);
+    this.context = context;
   }
 }

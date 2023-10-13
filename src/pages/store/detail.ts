@@ -4,7 +4,6 @@ import storeInfoStyle from "@/components/store/storeInfo.scss";
 import foodItemStyle from "@/components/food/foodItem.scss";
 
 import storeStyles from "../../components/store/storeInfo.scss";
-import Handlebars from "handlebars";
 
 import Page from "@/core/Page";
 
@@ -196,6 +195,6 @@ export default class StoreDetailPage extends Page {
       },
       foodLists: foodListData,
     };
-    this.compiledTemplate = Handlebars.compile(template)(context);
+    this.context = context;
   }
 }

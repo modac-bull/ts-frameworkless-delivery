@@ -8,8 +8,6 @@ import Page from "@/core/Page";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
-import Handlebars from "handlebars";
-
 const template = `
 {{!헤더}}
 <header class=${headerStyle["header-container"]}>
@@ -133,6 +131,7 @@ export default class CartPage extends Page {
       },
       cartItemLists: cartItemData,
     };
-    this.compiledTemplate = Handlebars.compile(template)(context);
+
+    this.context = context;
   }
 }

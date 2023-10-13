@@ -1,24 +1,29 @@
 import { Params } from "@/router/router";
 type EventMapType = { [key: string]: (event: Event) => void };
 type ComponentMapType = { key: string; component: string }[];
+import Handlebars from "handlebars";
+
 export default abstract class Page {
   /* 페이지 HTML 템플릿 */
-
+  private readonly template: string;
   /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
   private readonly container: HTMLElement;
-  /* 실시간으로 렌더링될 템플릿 */
+
   /* 페이지에 전달된 파라미터 저장 */
   private _params: Params | null = null;
   /* 이벤트 핸들러 함수 저장 */
   private boundEventHandlers: EventMapType = {};
   protected componentMap: ComponentMapType = [];
 
+  /* handlebar로 컴파일된 template */
   protected compiledTemplate: string;
+  /* handlebar에 사용될 context 객체 */
+  protected context: { [key: string]: unknown };
 
+  // url 파라미터 getter/setter
   get params(): Params | null {
     return this._params;
   }
-
   set params(value: Params | null) {
     this._params = value;
   }
@@ -34,20 +39,14 @@ export default abstract class Page {
     }
 
     this.container = containerElement;
-    this.compiledTemplate = template;
-  }
-
-  /* 템플릿에 데이터를 입힌 템플릿으로 교체 */
-  protected setTemplateData(
-    template: string,
-    key: string,
-    value: string
-  ): string {
-    return template.replace(`{{__${key}__}}`, value);
+    this.template = template;
+    this.compiledTemplate = "";
+    this.context = {};
   }
 
   /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
   protected updateHTML(): void {
+    this.compiledTemplate = Handlebars.compile(this.template)(this.context);
     this.container.innerHTML = this.compiledTemplate;
   }
 
@@ -98,18 +97,17 @@ export default abstract class Page {
   }
 
   /**
-   * UI 업데이트를 위한 추상 메서드
-   * 하위 클래스에서 구현
+   * 데이터 업데이트
    */
   abstract updateData(): Promise<void>;
 
   /* 
-  updateUI 호출, 이벤트를 바인딩
+  updateData 호출, updateHTML 호출, 이벤트를 바인딩
   error 발생시 404 url로 이동
   */
   async render(): Promise<void> {
     try {
-      await this.updateData(); // updateUI 호출
+      await this.updateData(); // updateData 호출
 
       // 별도의 렌더링 하는 메서드 이곳에서 호출
       this.updateHTML();
