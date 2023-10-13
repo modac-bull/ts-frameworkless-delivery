@@ -19,24 +19,22 @@ export default class HomePage extends Page {
     super(containerId, template);
   }
 
-  async updateUI(): Promise<void> {
+  async updateData(): Promise<void> {
     const res = await getStoreListData();
+    const foodlistElement = res.map((store) => storeItem(store)).join("");
 
     const headerElement = header({ title: "메인", hasBack: false });
-    this.setTemplateData("header", headerElement);
 
-    const foodlistElement = res.map((store) => storeItem(store)).join("");
-    this.setTemplateData("food_list", foodlistElement);
-
-    this.updatePage();
-  }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error : ", error);
-    }
+    const state = [
+      {
+        key: "header",
+        component: headerElement,
+      },
+      {
+        key: "food_list",
+        component: foodlistElement,
+      },
+    ];
+    this.componentMap.push(...state);
   }
 }

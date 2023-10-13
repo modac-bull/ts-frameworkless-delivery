@@ -7,12 +7,17 @@ import foodOption from "@/components/food/foodOption";
 import foodPrice from "@/components/food/foodPrice";
 import Page from "@/core/Page";
 import { selectedFoodInfo } from "@/apis/food/types";
+import LocalStorageUtil from "@/core/LocalStorageUtil";
+import { localStorageKey } from "@/core/constant";
 
 const template = `{{__header__}}
   <div class='area'>
     {{__food_info__}}
 
-    {{__food_options__}}
+    <div class=${styles["option-container"]}>
+      <p class=${styles["title-option"]}>추가선택</p>
+      {{__food_options__}}
+    </div>
 
     <div class='divider-st1'></div>
 
@@ -20,18 +25,20 @@ const template = `{{__header__}}
   </div>
   `;
 export default class FoodDetailPage extends Page {
-  foodId: string | null;
-  optionId: string[];
-  totalPrice: number;
+  private foodId: string | null;
+  private optionId: string[];
+  private totalPrice: number;
+  private localStorage_key: string;
 
   constructor(containerId: string) {
     super(containerId, template);
     this.foodId = "";
     this.optionId = [];
     this.totalPrice = 0;
+    this.localStorage_key = localStorageKey.CART_KEY;
   }
 
-  eventMap() {
+  defineEventMap() {
     return {
       "click #btn-add-cart": this.buttonClickHandler,
       "change #price-option": this.inputChangeHandler,
@@ -45,6 +52,8 @@ export default class FoodDetailPage extends Page {
       foodId: null,
       optionIds: [],
     };
+    selectedInfo.foodId = this.foodId;
+    selectedInfo.optionIds = this.optionId;
 
     /* 
     !!! 로컬스토리지 JSON.Parse 모듈화 !!!
@@ -53,11 +62,12 @@ export default class FoodDetailPage extends Page {
     - 단골 코스
     - 예외처리, 에러 상황에서 어떻게 처리할 것인지에 대해 고민 -> 개선하기
     */
-    let cart = JSON.parse(localStorage.getItem("cart") as string) || [];
-    selectedInfo.foodId = this.foodId;
-    selectedInfo.optionIds = this.optionId;
-    cart.push(selectedInfo);
-    localStorage.setItem("cart", JSON.stringify(cart));
+    let cartItems = LocalStorageUtil.get<selectedFoodInfo[]>(
+      this.localStorage_key,
+      []
+    );
+    cartItems.push(selectedInfo);
+    LocalStorageUtil.set(this.localStorage_key, cartItems);
     alert("장바구니에 추가했습니다.");
   }
 
@@ -87,45 +97,42 @@ export default class FoodDetailPage extends Page {
     }
   }
 
-  async updateUI(): Promise<void> {
+  async updateData(): Promise<void> {
     const idx = this.params?.["foodId"]! as string;
     this.foodId = idx;
     this.optionId = [];
 
     const headerElement = header({ title: "음식 상세", hasBack: true });
-    this.setTemplateData("header", headerElement);
 
     const foodDetailRes = await getFoodDetailByIdx(Number(idx));
     this.totalPrice = foodDetailRes.price;
-
     const foodInfoElement = foodInfo(foodDetailRes);
-    this.setTemplateData("food_info", foodInfoElement);
 
     const optionInfoElement =
       foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
       "<p>옵션이 없습니다.</p>";
-    this.setTemplateData(
-      "food_options",
-      `<div class=${styles["option-container"]}>
-        <p class=${styles["title-option"]}>추가선택</p>
-        ${optionInfoElement}
-      </div>` ?? ""
-    );
 
     const SELECTED_PRICE = this.totalPrice;
     const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
-    this.setTemplateData("bottom_sheet", bottomSheetElement);
 
-    this.updatePage();
-  }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-      throw "데이터 없음";
-    }
+    const state = [
+      {
+        key: "header",
+        component: headerElement,
+      },
+      {
+        key: "food_info",
+        component: foodInfoElement,
+      },
+      {
+        key: "food_options",
+        component: optionInfoElement,
+      },
+      {
+        key: "bottom_sheet",
+        component: bottomSheetElement,
+      },
+    ];
+    this.componentMap.push(...state);
   }
 }

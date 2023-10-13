@@ -5,6 +5,8 @@ import styles from "./like.scss";
 import Page from "@/core/Page";
 import { getStoreDetailByIdx } from "@/apis/store/store";
 import likeItem from "@/components/like/likeItem";
+import LocalStorageUtil from "@/core/LocalStorageUtil";
+import { localStorageKey } from "@/core/constant";
 // import likeItem from "@/components/like/likeItem";
 
 const template = `
@@ -18,17 +20,20 @@ const template = `
 
 export default class LikePage extends Page {
   likeItemData: selectedFoodInfo[];
+  localStorage_key: string;
 
   constructor(containerId: string) {
     super(containerId, template);
     this.likeItemData = [];
+    this.localStorage_key = localStorageKey.LIKE_KEY;
   }
 
   async renderLikeElement() {
-    console.log("호출");
     // 로컬스토리지에서 받은 데이터
-    const getLikeStoreItemData =
-      JSON.parse(localStorage.getItem("like") as string) || [];
+    const getLikeStoreItemData = LocalStorageUtil.get<string[]>(
+      this.localStorage_key,
+      []
+    );
 
     const likeStoreItemData = await Promise.all(
       getLikeStoreItemData.map((likeId: string) =>
@@ -44,20 +49,19 @@ export default class LikePage extends Page {
     return likeStoreItemElement;
   }
 
-  async updateUI(): Promise<void> {
+  async updateData(): Promise<void> {
     const headerElement = header({ title: "찜 페이지", hasBack: true });
-    this.setTemplateData("header", headerElement);
-    // 좋아요 리스트 렌더링
-    this.setTemplateData("like_item", await this.renderLikeElement());
-    this.updatePage();
-  }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-    }
+    const likeElement = await this.renderLikeElement();
+    const state = [
+      {
+        key: "header",
+        component: headerElement,
+      },
+      {
+        key: "like_item",
+        component: likeElement,
+      },
+    ];
+    this.componentMap.push(...state);
   }
 }

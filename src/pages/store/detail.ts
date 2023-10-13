@@ -26,22 +26,20 @@ const template = `{{__header__}}
   </div>
   `;
 export default class StoreDetailPage extends Page {
-  storeId: string | null;
   isLike: boolean;
   constructor(containerId: string) {
     super(containerId, template);
-    this.storeId = null;
     this.isLike = false;
   }
 
-  eventMap() {
+  defineEventMap() {
     return {
-      "click #btnLike": this.updateLike,
+      "click #btnLike": this.btnLikeHandler,
     };
   }
 
   // 장바구니 추가 로직
-  async updateLike(): Promise<void> {
+  async btnLikeHandler(): Promise<void> {
     let tempIsLike = !this.isLike;
     this.isLike = tempIsLike; // 임시 상태 변경
     await this.updateLikeUI(); // UI 업데이트
@@ -96,32 +94,34 @@ export default class StoreDetailPage extends Page {
       console.error("초기 상태 로딩 실패", error);
     }
   }
-  async updateUI(): Promise<void> {
-    this.checkLike(); // 초기 상태 확인
+  async updateData(): Promise<void> {
+    await this.checkLike(); // 초기 상태 확인
 
     const id = this.params?.["storeId"]! as string;
 
+    console.log("호출?", id);
     const foodListData = await getFoodListDataByIdx(id);
     const headerElement = header({ title: "가게 상세", hasBack: true });
-    this.setTemplateData("header", headerElement);
 
     const storeDetail = await getStoreDetailByIdx(Number(id));
     const storeInfoElement = storeInfo(storeDetail, this.isLike);
-    this.setTemplateData("store_info", storeInfoElement);
-
     const foodListElement = foodListData.map((food) => foodItem(food)).join("");
-    this.setTemplateData("food_list", foodListElement);
 
-    this.updatePage();
-  }
-
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-      throw "데이터 없습니다.";
-    }
+    const state = [
+      {
+        key: "header",
+        component: headerElement,
+      },
+      {
+        key: "store_info",
+        component: storeInfoElement,
+      },
+      {
+        key: "food_list",
+        component: foodListElement,
+      },
+    ];
+    this.componentMap.push(...state);
+    console.log(this.componentMap);
   }
 }

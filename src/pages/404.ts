@@ -9,15 +9,7 @@ export default class NotFoundPage extends Page {
   constructor(containerId: string) {
     super(containerId, template);
   }
-  async updateUI(): Promise<void> {
-    this.updatePage();
-  }
-  async render(): Promise<void> {
-    try {
-      await this.updateUI();
-      this.bindEvents();
-    } catch (error) {
-      console.error("Error in rendering:", error);
-    }
+  async updateData(): Promise<void> {
+    this.updateHTML();
   }
 }
