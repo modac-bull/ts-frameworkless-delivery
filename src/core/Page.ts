@@ -3,7 +3,6 @@ type EventMapType = { [key: string]: (event: Event) => void };
 type ComponentMapType = { key: string; component: string }[];
 export default abstract class Page {
   /* 페이지 HTML 템플릿 */
-  private readonly template: string;
 
   /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
   private readonly container: HTMLElement;
@@ -13,6 +12,8 @@ export default abstract class Page {
   /* 이벤트 핸들러 함수 저장 */
   private boundEventHandlers: EventMapType = {};
   protected componentMap: ComponentMapType = [];
+
+  protected compiledTemplate: string;
 
   get params(): Params | null {
     return this._params;
@@ -33,7 +34,7 @@ export default abstract class Page {
     }
 
     this.container = containerElement;
-    this.template = template;
+    this.compiledTemplate = template;
   }
 
   /* 템플릿에 데이터를 입힌 템플릿으로 교체 */
@@ -47,24 +48,7 @@ export default abstract class Page {
 
   /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
   protected updateHTML(): void {
-    /* 
-    1. 템플릿과 관련된 모든 작업을 한다.
-    2. renderTemplate은 없앤다.
-    - 맵, 변수
-    3. element는 데이터가 아니다. 
-     */
-    let updatedTemplate = this.template;
-    console.log(this.componentMap);
-    this.componentMap.map((component) => {
-      updatedTemplate = this.setTemplateData(
-        updatedTemplate,
-        component.key,
-        component.component
-      );
-    });
-
-    this.container.innerHTML = updatedTemplate;
-    this.componentMap = [];
+    this.container.innerHTML = this.compiledTemplate;
   }
 
   /**
