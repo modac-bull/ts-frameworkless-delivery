@@ -1,18 +1,71 @@
-import { getFoodDetailByIdx } from "@/apis/food/food";
-import { selectedFoodInfo } from "@/apis/food/types";
-import cartItem from "@/components/cart/cartItem";
-// import cartItem from "@/components/cart/cartItem";
-import header from "@/components/header/header";
 import styles from "./cart.scss";
+import headerStyle from "@/components/header/header.scss";
+import cartItemStyle from "@/components/cart/cartItem.scss";
+
+import { getFoodDetailByIdx } from "@/apis/food/food";
+import { FoodDetailItem, selectedFoodInfo } from "@/apis/food/types";
 import Page from "@/core/Page";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
+import Handlebars from "handlebars";
+
 const template = `
-{{__header__}}
+{{!헤더}}
+<header class=${headerStyle["header-container"]}>
+  <div class=${headerStyle["header-inner"]}>
+    <div class=${headerStyle["header-left"]}>
+    {{#if header/hasBackButton}}
+      <button class=${headerStyle["button-back"]} >
+        <i id="back-button" class="fa fa-chevron-left fa-lg"></i>
+      </button>
+    {{/if}}
+
+    </div>
+    <h1>{{header/title}}</h1>
+    <div class="${headerStyle["button-wrapper"]} ${headerStyle["header-right"]}">
+      <button data-navigate="/" class=${headerStyle["button-home"]}>
+        <i class="fa fa-home fa-lg"></i>
+      </button>
+      <button data-navigate="/like" class=${headerStyle["button-like"]}>
+        <i class="fa fa-heart fa-lg"></i>
+      </button>
+      <button data-navigate="/cart" class=${headerStyle["button-cart"]} >
+        <i class="fa fa-shopping-cart fa-lg"></i>
+      </button>
+    </div>
+  </div>
+</header>
+{{! /.헤더}}
+
 <div class='area'>
   <div class="${styles["cart-tiems-container"]} cart-container">
-    {{__cart_item__}}
+    {{! 장바구니 음식 목록}}
+    {{#each cartItemLists}}
+    <div class=${cartItemStyle["cart-item-wrapper"]}>
+      <div class=${cartItemStyle["img-wrapper"]}>
+        <img src={{thumbImg}}/>
+      </div>
+      <div class=${cartItemStyle["info-wrapper"]}>
+
+        <button class='${cartItemStyle["btn-close"]}' id='btn-remove-cart'>
+          <i class="fa fa-times fa-lg" data-id={{id}}></i>
+        </button>
+        <h3 class=${cartItemStyle["title-food"]}>{{title}}</h3>
+        <ul class=${cartItemStyle["desc-wrap"]}>
+          <li class=${cartItemStyle["text-price"]}>가격 : {{price}}원</li>
+          <li class=${cartItemStyle["text-desc"]}>{{desc}}</li>
+          <li class=${cartItemStyle["text-options"]}>
+            선택된 옵션 : 
+            {{#each options}}
+              {{title}}
+            {{/each}}
+          </li>
+        </ul>
+      </div>
+    </div>
+    {{/each}}
+    {{! /.장바구니 음식 목록}}
   </div>
 </div>
 `;
@@ -27,26 +80,18 @@ export default class CartPage extends Page {
     this.localStorage_key = localStorageKey.CART_KEY;
   }
 
-  async renderCartElement(): Promise<string> {
-    // 로컬스토리지에서 받은 데이터
-    try {
-      const getCartItemData = LocalStorageUtil.get<selectedFoodInfo[]>(
-        this.localStorage_key,
-        []
-      );
-      const cartItemData = await Promise.all(
-        getCartItemData.map((cart: selectedFoodInfo) =>
-          getFoodDetailByIdx(Number(cart.foodId))
-        )
-      );
-      const cartItemElement = cartItemData
-        .map((cart, idx) => cartItem(cart, getCartItemData[idx].optionIds))
-        .join("");
-      return cartItemElement;
-    } catch (error) {
-      console.log(error);
-      return "<p>에러가 발생했습니다.</p>";
-    }
+  // 로컬스토리지에서 받은 데이터 => 음식 상세 데이터 api 요청
+  async getCartFoodData(): Promise<FoodDetailItem[]> {
+    const getCartItemData = LocalStorageUtil.get<selectedFoodInfo[]>(
+      this.localStorage_key,
+      []
+    );
+    const cartItemData = await Promise.all(
+      getCartItemData.map((cart: selectedFoodInfo) =>
+        getFoodDetailByIdx(Number(cart.foodId))
+      )
+    );
+    return cartItemData;
   }
 
   defineEventMap() {
@@ -78,20 +123,16 @@ export default class CartPage extends Page {
   }
 
   async updateData(): Promise<void> {
-    const headerElement = header({ title: "장바구니 페이지", hasBack: true });
+    const cartItemData = await this.getCartFoodData();
+    console.log("catItemData", cartItemData);
 
-    const cartElement = await this.renderCartElement();
-
-    const data = [
-      {
-        key: "header",
-        component: headerElement,
+    const context = {
+      header: {
+        hasBackButton: true,
+        title: "장바구니 페이지",
       },
-      {
-        key: "cart_item",
-        component: cartElement,
-      },
-    ];
-    this.componentMap.push(...data);
+      cartItemLists: cartItemData,
+    };
+    this.compiledTemplate = Handlebars.compile(template)(context);
   }
 }

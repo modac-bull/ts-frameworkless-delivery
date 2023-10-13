@@ -88,13 +88,13 @@ export default class LikePage extends Page {
     this.localStorage_key = localStorageKey.LIKE_KEY;
   }
 
-  async renderLikeElement() {
-    // 로컬스토리지에서 받은 데이터
+  // 로컬스토리지에서 받은 데이터 id => 가게 상세 데이터 반환
+  async getLikeStoreData() {
     const getLikeStoreItemData = LocalStorageUtil.get<string[]>(
       this.localStorage_key,
       []
     );
-
+    /* id와 일치하는 가게 상세 데이터 api요청 */
     const likeStoreItemData = await Promise.all(
       getLikeStoreItemData.map((likeId: string) =>
         getStoreDetailByIdx(Number(likeId))
@@ -105,7 +105,7 @@ export default class LikePage extends Page {
   }
 
   async updateData(): Promise<void> {
-    const likeStoreItemData = await this.renderLikeElement();
+    const likeStoreItemData = await this.getLikeStoreData();
     const context = {
       header: {
         hasBackButton: true,
