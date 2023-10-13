@@ -16,6 +16,7 @@ const template = `
 <div class='area'>
   <div class=${styles["main"]}>
     <ul>
+      {{! 가게 목록}}
       {{#each storeLists}}
         {{>storeItem 
           id=id 
@@ -27,6 +28,7 @@ const template = `
           delivery_time=delivery_time
         }}
       {{/each}}
+      {{! /.가게 목록}}
     </ul>
   </div>
 </div>
