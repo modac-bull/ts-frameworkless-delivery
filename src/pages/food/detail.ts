@@ -1,6 +1,7 @@
-// import { Params } from "@/router/router";
-import header from "@/components/header/header";
 import styles from "./detail.scss";
+import headerStyle from "@/components/header/header.scss";
+import header from "@/components/header/header";
+
 import { getFoodDetailByIdx } from "@/apis/food/food";
 import foodInfo from "@/components/food/foodInfo";
 import foodOption from "@/components/food/foodOption";
@@ -10,7 +11,34 @@ import { selectedFoodInfo } from "@/apis/food/types";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
-const template = `{{__header__}}
+const template = `
+{{! 헤더 }}
+<header class=${headerStyle["header-container"]}>
+<div class=${headerStyle["header-inner"]}>
+  <div class=${headerStyle["header-left"]}>
+  {{#if header/hasBackButton}}
+    <button class=${headerStyle["button-back"]} >
+      <i id="back-button" class="fa fa-chevron-left fa-lg"></i>
+    </button>
+  {{/if}}
+
+  </div>
+  <h1>{{header/title}}</h1>
+  <div class="${headerStyle["button-wrapper"]} ${headerStyle["header-right"]}">
+    <button data-navigate="/" class=${headerStyle["button-home"]}>
+      <i class="fa fa-home fa-lg"></i>
+    </button>
+    <button data-navigate="/like" class=${headerStyle["button-like"]}>
+      <i class="fa fa-heart fa-lg"></i>
+    </button>
+    <button data-navigate="/cart" class=${headerStyle["button-cart"]} >
+      <i class="fa fa-shopping-cart fa-lg"></i>
+    </button>
+  </div>
+</div>
+</header>
+{{! /.헤더}}
+
   <div class='area'>
     {{__food_info__}}
 
@@ -55,13 +83,6 @@ export default class FoodDetailPage extends Page {
     selectedInfo.foodId = this.foodId;
     selectedInfo.optionIds = this.optionId;
 
-    /* 
-    !!! 로컬스토리지 JSON.Parse 모듈화 !!!
-    - 방어 코드 
-    - 예외 처리
-    - 단골 코스
-    - 예외처리, 에러 상황에서 어떻게 처리할 것인지에 대해 고민 -> 개선하기
-    */
     let cartItems = LocalStorageUtil.get<selectedFoodInfo[]>(
       this.localStorage_key,
       []
