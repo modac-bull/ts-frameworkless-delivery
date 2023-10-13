@@ -1,24 +1,20 @@
 import { Params } from "@/router/router";
 type EventMapType = { [key: string]: (event: Event) => void };
-type ComponentMapType = { key: string; component: string }[];
 import Handlebars from "handlebars";
 
 export default abstract class Page {
-  /* 페이지 HTML 템플릿 */
-  private readonly template: string;
   /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
   private readonly container: HTMLElement;
-
-  /* 페이지에 전달된 파라미터 저장 */
-  private _params: Params | null = null;
-  /* 이벤트 핸들러 함수 저장 */
-  private boundEventHandlers: EventMapType = {};
-  protected componentMap: ComponentMapType = [];
-
+  /* 페이지 HTML 템플릿 */
+  private readonly template: string;
   /* handlebar로 컴파일된 template */
   protected compiledTemplate: string;
   /* handlebar에 사용될 context 객체 */
   protected context: { [key: string]: unknown };
+  /* 페이지에 전달된 파라미터 저장 */
+  private _params: Params | null = null;
+  /* 이벤트 핸들러 함수 저장 */
+  private boundEventHandlers: EventMapType = {};
 
   // url 파라미터 getter/setter
   get params(): Params | null {
@@ -115,7 +111,7 @@ export default abstract class Page {
       this.bindEvents();
     } catch (error) {
       console.log(error);
-      // window.location.href = "/404";
+      window.location.href = "/404";
     }
   }
 }
