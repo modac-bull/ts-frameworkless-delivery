@@ -1,15 +1,15 @@
 import styles from "./detail.scss";
 import headerStyle from "@/components/header/header.scss";
-import header from "@/components/header/header";
+import foodInfoStyle from "@/components/food/foodInfo.scss";
+import foodOptionsStyle from "@/components/food/foodOption.scss";
+import foodPriceStyle from "@/components/food/foodPrice.scss";
 
 import { getFoodDetailByIdx } from "@/apis/food/food";
-import foodInfo from "@/components/food/foodInfo";
-import foodOption from "@/components/food/foodOption";
-import foodPrice from "@/components/food/foodPrice";
 import Page from "@/core/Page";
 import { selectedFoodInfo } from "@/apis/food/types";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
+import Handlebars from "handlebars";
 
 const template = `
 {{! 헤더 }}
@@ -40,16 +40,46 @@ const template = `
 {{! /.헤더}}
 
   <div class='area'>
-    {{__food_info__}}
+    {{!음식 정보}}
+    <div class=${foodInfoStyle["food-info-container"]}>
+      <div class=${foodInfoStyle["img-wrap"]}>
+        <img src={{foodInfo/data/thumbImg}} />
+      </div>
+      <div class=${foodInfoStyle["info-wrap"]}>
+        <h2 class=${foodInfoStyle["title-food"]}>{{foodInfo/data/title}}</h2>
+        <p class=${foodInfoStyle["desc-food"]}>{{foodInfo/data/desc}}</p>
+        <div class=${foodInfoStyle["price-wrap"]}>
+          <p class=${foodInfoStyle["title-feature"]}>가격</p>
+          <p class=${foodInfoStyle["text-price"]}>{{foodInfo/data/price}}</p>
+        </div>
+      </div>
+      <div class='divider-st1'></div>
+    </div>
+    {{!/.음식 정보}}
 
+    
     <div class=${styles["option-container"]}>
       <p class=${styles["title-option"]}>추가선택</p>
-      {{__food_options__}}
+      {{! 옵션 정보}}
+      {{#each foodOptionLists}}
+      <div class=${foodOptionsStyle["food-option-container"]}>
+        <div class=${foodOptionsStyle["form-label"]} id='price-option'>
+          <input  name={{id}} value={{price}} id={{id}} type='checkbox' class=${foodOptionsStyle["checkbox-st1"]}/>
+          <label for={{id}}>{{title}}</label>
+        </div>
+        <p class=${foodOptionsStyle["text-price"]}>+{{price}}원</p>
+      </div>
+      {{/each}}
+      {{! /.옵션 정보}}
     </div>
 
     <div class='divider-st1'></div>
 
-    {{__bottom_sheet__}}
+    {{! 하단 가격 }}
+    <div class=${foodPriceStyle["bottom-sheet"]}>
+      <button id='btn-add-cart' type='button' class=${foodPriceStyle["button-primary"]}><span id="total-price" >{{foodPrice}}</span>원 담기</button>
+    </div>
+    {{! /.하단 가격 }}
   </div>
   `;
 export default class FoodDetailPage extends Page {
@@ -113,7 +143,7 @@ export default class FoodDetailPage extends Page {
       // 가격 정보 업데이트
       const totalPriceElement = document.getElementById("total-price");
       if (totalPriceElement) {
-        totalPriceElement.textContent = this.totalPrice.toLocaleString();
+        totalPriceElement.textContent = String(this.totalPrice);
       }
     }
   }
@@ -123,37 +153,20 @@ export default class FoodDetailPage extends Page {
     this.foodId = idx;
     this.optionId = [];
 
-    const headerElement = header({ title: "음식 상세", hasBack: true });
+    const foodInfoData = await getFoodDetailByIdx(Number(idx));
+    this.totalPrice = foodInfoData.price;
 
-    const foodDetailRes = await getFoodDetailByIdx(Number(idx));
-    this.totalPrice = foodDetailRes.price;
-    const foodInfoElement = foodInfo(foodDetailRes);
-
-    const optionInfoElement =
-      foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
-      "<p>옵션이 없습니다.</p>";
-
-    const SELECTED_PRICE = this.totalPrice;
-    const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
-
-    const state = [
-      {
-        key: "header",
-        component: headerElement,
+    const context = {
+      header: {
+        hasBackButton: true,
+        title: "음식 상세",
       },
-      {
-        key: "food_info",
-        component: foodInfoElement,
+      foodInfo: {
+        data: foodInfoData,
       },
-      {
-        key: "food_options",
-        component: optionInfoElement,
-      },
-      {
-        key: "bottom_sheet",
-        component: bottomSheetElement,
-      },
-    ];
-    this.componentMap.push(...state);
+      foodOptionLists: foodInfoData.options,
+      foodPrice: this.totalPrice,
+    };
+    this.compiledTemplate = Handlebars.compile(template)(context);
   }
 }

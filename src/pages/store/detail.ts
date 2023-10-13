@@ -181,15 +181,9 @@ export default class StoreDetailPage extends Page {
   }
   async updateData(): Promise<void> {
     await this.checkLike(); // 초기 상태 확인
-
     const id = this.params?.["storeId"]! as string;
-
     const foodListData = await getFoodListDataByIdx(id);
-    // const headerElement = header({ title: "가게 상세", hasBack: true });
-
     const storeDetail = await getStoreDetailByIdx(Number(id));
-    // const storeInfoElement = storeInfo(storeDetail, this.isLike);
-    // const foodListElement = foodListData.map((food) => foodItem(food)).join("");
 
     const context = {
       header: {
@@ -203,22 +197,5 @@ export default class StoreDetailPage extends Page {
       foodLists: foodListData,
     };
     this.compiledTemplate = Handlebars.compile(template)(context);
-
-    // const state = [
-    //   {
-    //     key: "header",
-    //     component: headerElement,
-    //   },
-    //   {
-    //     key: "store_info",
-    //     component: storeInfoElement,
-    //   },
-    //   {
-    //     key: "food_list",
-    //     component: foodListElement,
-    //   },
-    // ];
-    // this.componentMap.push(...state);
-    // console.log(this.componentMap);
   }
 }
