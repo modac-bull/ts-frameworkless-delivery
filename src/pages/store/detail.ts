@@ -1,27 +1,56 @@
 import styles from "./detail.scss";
-import storeStyles from "../../components/store/storeInfo.scss";
+import headerTemplate from "@/components/header/header";
+import storeInfoTemplate from "@/components/store/storeInfo";
+import foodItemTemplate from "@/components/food/foodItem";
 
-import header from "@/components/header/header";
-import foodItem from "@/components/food/foodItem";
-import { getFoodListDataByIdx } from "@/apis/food/food";
+import storeStyles from "../../components/store/storeInfo.scss";
+import Handlebars from "handlebars";
+
+Handlebars.registerPartial("header", headerTemplate);
+Handlebars.registerPartial("storeInfo", storeInfoTemplate);
+Handlebars.registerPartial("foodItem", foodItemTemplate);
+
 import Page from "@/core/Page";
-import storeInfo from "@/components/store/storeInfo";
+
 import { getStoreDetailByIdx } from "@/apis/store/store";
 import {
   deleteLikeStore,
   getLikeStoreList,
   postLikeStore,
 } from "@/apis/like/like";
+import { getFoodListDataByIdx } from "@/apis/food/food";
 
-const template = `{{__header__}}
+const template = `
+{{! 헤더 }}
+{{> header hasBackButton=header/hasBackButton title=header/title }}
+{{! /.헤더}}
+
   <div class='area'>
-    {{__store_info__}}
-
+    {{! 가게 상세 }}
+    {{>storeInfo 
+      data=storeInfo/data
+      isLike=storeInfo/isLike
+    }}
+    {{! /.가게 상세 }}
+    
     <div class='divider-st1'></div>
 
     <div class="${styles["food-list-container"]}">
       <p class="${styles["title-menu"]}">추천 메뉴</p>
-      {{__food_list__}}
+
+      {{! 음식 메뉴}}
+      {{#each foodLists}}
+        {{>foodItem 
+          id=id
+          title=title
+          desc=desc
+          {{! helper로 toLocalsString 역할하는 기능 추가}}
+          price=price
+          thumbImg=thumbImg
+        }}
+      {{/each}}
+      {{! /.음식 메뉴}}
+
     </div>
   </div>
   `;
@@ -96,32 +125,21 @@ export default class StoreDetailPage extends Page {
   }
   async updateData(): Promise<void> {
     await this.checkLike(); // 초기 상태 확인
-
     const id = this.params?.["storeId"]! as string;
-
-    console.log("호출?", id);
     const foodListData = await getFoodListDataByIdx(id);
-    const headerElement = header({ title: "가게 상세", hasBack: true });
-
     const storeDetail = await getStoreDetailByIdx(Number(id));
-    const storeInfoElement = storeInfo(storeDetail, this.isLike);
-    const foodListElement = foodListData.map((food) => foodItem(food)).join("");
 
-    const state = [
-      {
-        key: "header",
-        component: headerElement,
+    const context = {
+      header: {
+        hasBackButton: true,
+        title: "가게 상세",
       },
-      {
-        key: "store_info",
-        component: storeInfoElement,
+      storeInfo: {
+        data: storeDetail,
+        isLike: this.isLike,
       },
-      {
-        key: "food_list",
-        component: foodListElement,
-      },
-    ];
-    this.componentMap.push(...state);
-    console.log(this.componentMap);
+      foodLists: foodListData,
+    };
+    this.context = context;
   }
 }

@@ -1,15 +1,34 @@
-import header from "@/components/header/header";
 import styles from "./home.scss";
+import headerTemplate from "@/components/header/header";
+import storeItemTemplate from "@/components/store/storeItem";
 import Page from "@/core/Page";
 import { getStoreListData } from "@/apis/store/store";
-import storeItem from "@/components/store/storeItem";
+import Handlebars from "handlebars";
+
+Handlebars.registerPartial("header", headerTemplate);
+Handlebars.registerPartial("storeItem", storeItemTemplate);
 
 const template = `
-{{__header__}}
+{{!헤더}}
+{{> header hasBackButton=header/hasBackButton title=header/title }}
+{{! /.헤더}}
+
 <div class='area'>
   <div class=${styles["main"]}>
     <ul>
-      {{__food_list__}}
+      {{! 가게 목록}}
+      {{#each storeLists}}
+        {{>storeItem 
+          id=id 
+          thumbImgUrls=thumImgUrls
+          review_point=review_point 
+          review_cnt=review_cnt 
+          distance=distance 
+          delivery_price_range=delivery_price_range
+          delivery_time=delivery_time
+        }}
+      {{/each}}
+      {{! /.가게 목록}}
     </ul>
   </div>
 </div>
@@ -20,21 +39,15 @@ export default class HomePage extends Page {
   }
 
   async updateData(): Promise<void> {
-    const res = await getStoreListData();
-    const foodlistElement = res.map((store) => storeItem(store)).join("");
+    const storeListData = await getStoreListData();
 
-    const headerElement = header({ title: "메인", hasBack: false });
-
-    const state = [
-      {
-        key: "header",
-        component: headerElement,
+    const context = {
+      header: {
+        hasBackButton: false,
+        title: "메인",
       },
-      {
-        key: "food_list",
-        component: foodlistElement,
-      },
-    ];
-    this.componentMap.push(...state);
+      storeLists: storeListData,
+    };
+    this.context = context;
   }
 }

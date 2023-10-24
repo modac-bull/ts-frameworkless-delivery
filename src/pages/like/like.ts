@@ -1,19 +1,40 @@
-import { selectedFoodInfo } from "@/apis/food/types";
-// import likeItem from "@/components/like/likeItem";
-import header from "@/components/header/header";
 import styles from "./like.scss";
+import { selectedFoodInfo } from "@/apis/food/types";
+import headerTemplate from "@/components/header/header";
+import likeItemTemplate from "@/components/like/likeItem";
+
 import Page from "@/core/Page";
 import { getStoreDetailByIdx } from "@/apis/store/store";
-import likeItem from "@/components/like/likeItem";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
-// import likeItem from "@/components/like/likeItem";
+
+import Handlebars from "handlebars";
+
+Handlebars.registerPartial("header", headerTemplate);
+Handlebars.registerPartial("likeItem", likeItemTemplate);
 
 const template = `
-{{__header__}}
+{{!헤더}}
+{{> header hasBackButton=header/hasBackButton title=header/title }}
+{{! /.헤더}}
+
 <div class='area'>
   <div class="${styles["like-tiems-container"]} like-container">
-    {{__like_item__}}
+    {{! 좋아요 목록}}
+    {{#each likeItemlists }}
+      {{>likeItem
+        id=id
+        thumImgUrls=thumImgUrls
+        title=title
+        description=description
+        review_point=review_point
+        review_cnt=review_cnt
+        distance=distance
+        delivery_price_range=delivery_price_range
+        delivery_time=delivery_time
+      }}
+    {{/each}}
+    {{! /.좋아요 목록}}
   </div>
 </div>
 `;
@@ -28,40 +49,31 @@ export default class LikePage extends Page {
     this.localStorage_key = localStorageKey.LIKE_KEY;
   }
 
-  async renderLikeElement() {
-    // 로컬스토리지에서 받은 데이터
+  // 로컬스토리지에서 받은 데이터 id => 가게 상세 데이터 반환
+  async getLikeStoreData() {
     const getLikeStoreItemData = LocalStorageUtil.get<string[]>(
       this.localStorage_key,
       []
     );
-
+    /* id와 일치하는 가게 상세 데이터 api요청 */
     const likeStoreItemData = await Promise.all(
       getLikeStoreItemData.map((likeId: string) =>
         getStoreDetailByIdx(Number(likeId))
       )
     );
 
-    // const cartItemData = await getLikeStoreList();
-    const likeStoreItemElement = likeStoreItemData
-      .map((cart) => likeItem(cart))
-      .join("");
-    console.log("render", likeStoreItemData);
-    return likeStoreItemElement;
+    return likeStoreItemData;
   }
 
   async updateData(): Promise<void> {
-    const headerElement = header({ title: "찜 페이지", hasBack: true });
-    const likeElement = await this.renderLikeElement();
-    const state = [
-      {
-        key: "header",
-        component: headerElement,
+    const likeStoreItemData = await this.getLikeStoreData();
+    const context = {
+      header: {
+        hasBackButton: true,
+        title: "찜 페이지",
       },
-      {
-        key: "like_item",
-        component: likeElement,
-      },
-    ];
-    this.componentMap.push(...state);
+      likeItemlists: likeStoreItemData,
+    };
+    this.context = context;
   }
 }

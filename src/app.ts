@@ -32,3 +32,18 @@ router
   .addRoute("/like", likeListPage)
   .setNotFound(notFoundPage)
   .init();
+
+
+  /* 
+  TODO
+  - util함수로 빼기 
+  */
+window.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement;
+  // #back-button 또는 그의 상위 요소 중 #back-button 요소를 가지고 있는 경우
+  if (target.closest("#back-button")) {
+    // 뒤로 가기 로직
+    history.back();
+    return;
+  }
+});

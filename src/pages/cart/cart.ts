@@ -1,18 +1,38 @@
-import { getFoodDetailByIdx } from "@/apis/food/food";
-import { selectedFoodInfo } from "@/apis/food/types";
-import cartItem from "@/components/cart/cartItem";
-// import cartItem from "@/components/cart/cartItem";
-import header from "@/components/header/header";
 import styles from "./cart.scss";
+
+import headerTemplate from "@/components/header/header";
+import cartItemTemplate from "@/components/cart/cartItem";
+
+import { getFoodDetailByIdx } from "@/apis/food/food";
+import { FoodDetailItem, selectedFoodInfo } from "@/apis/food/types";
 import Page from "@/core/Page";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
+import Handlebars from "handlebars";
+
+Handlebars.registerPartial("header", headerTemplate);
+Handlebars.registerPartial("cartItem", cartItemTemplate);
+
 const template = `
-{{__header__}}
+{{!헤더}}
+{{> header hasBackButton=header/hasBackButton title=header/title }}
+{{! /.헤더}}
+
 <div class='area'>
   <div class="${styles["cart-tiems-container"]} cart-container">
-    {{__cart_item__}}
+    {{! 장바구니 음식 목록}}
+    {{#each cartItemLists}}
+      {{> cartItem
+        id=id
+        thumbImg=thumbImg
+        title=title
+        price=price
+        desc=desc
+        options=options
+      }}
+    {{/each}}
+    {{! /.장바구니 음식 목록}}
   </div>
 </div>
 `;
@@ -27,26 +47,18 @@ export default class CartPage extends Page {
     this.localStorage_key = localStorageKey.CART_KEY;
   }
 
-  async renderCartElement(): Promise<string> {
-    // 로컬스토리지에서 받은 데이터
-    try {
-      const getCartItemData = LocalStorageUtil.get<selectedFoodInfo[]>(
-        this.localStorage_key,
-        []
-      );
-      const cartItemData = await Promise.all(
-        getCartItemData.map((cart: selectedFoodInfo) =>
-          getFoodDetailByIdx(Number(cart.foodId))
-        )
-      );
-      const cartItemElement = cartItemData
-        .map((cart, idx) => cartItem(cart, getCartItemData[idx].optionIds))
-        .join("");
-      return cartItemElement;
-    } catch (error) {
-      console.log(error);
-      return "<p>에러가 발생했습니다.</p>";
-    }
+  // 로컬스토리지에서 받은 데이터 => 음식 상세 데이터 api 요청
+  async getCartFoodData(): Promise<FoodDetailItem[]> {
+    const getCartItemData = LocalStorageUtil.get<selectedFoodInfo[]>(
+      this.localStorage_key,
+      []
+    );
+    const cartItemData = await Promise.all(
+      getCartItemData.map((cart: selectedFoodInfo) =>
+        getFoodDetailByIdx(Number(cart.foodId))
+      )
+    );
+    return cartItemData;
   }
 
   defineEventMap() {
@@ -78,20 +90,17 @@ export default class CartPage extends Page {
   }
 
   async updateData(): Promise<void> {
-    const headerElement = header({ title: "장바구니 페이지", hasBack: true });
+    const cartItemData = await this.getCartFoodData();
+    console.log("catItemData", cartItemData);
 
-    const cartElement = await this.renderCartElement();
+    const context = {
+      header: {
+        hasBackButton: true,
+        title: "장바구니 페이지",
+      },
+      cartItemLists: cartItemData,
+    };
 
-    const data = [
-      {
-        key: "header",
-        component: headerElement,
-      },
-      {
-        key: "cart_item",
-        component: cartElement,
-      },
-    ];
-    this.componentMap.push(...data);
+    this.context = context;
   }
 }

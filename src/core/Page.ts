@@ -1,23 +1,23 @@
 import { Params } from "@/router/router";
 type EventMapType = { [key: string]: (event: Event) => void };
-type ComponentMapType = { key: string; component: string }[];
-export default abstract class Page {
-  /* 페이지 HTML 템플릿 */
-  private readonly template: string;
+import Handlebars from "handlebars";
 
+export default abstract class Page {
   /* 페이지 컨텐츠가 삽입될 부모 컨테이너 */
   private readonly container: HTMLElement;
-  /* 실시간으로 렌더링될 템플릿 */
+  /* 페이지 HTML 템플릿 */
+  private readonly template: string;
+  /* handlebar에 사용될 context 객체 */
+  protected context: { [key: string]: unknown };
   /* 페이지에 전달된 파라미터 저장 */
   private _params: Params | null = null;
   /* 이벤트 핸들러 함수 저장 */
   private boundEventHandlers: EventMapType = {};
-  protected componentMap: ComponentMapType = [];
 
+  // url 파라미터 getter/setter
   get params(): Params | null {
     return this._params;
   }
-
   set params(value: Params | null) {
     this._params = value;
   }
@@ -34,37 +34,13 @@ export default abstract class Page {
 
     this.container = containerElement;
     this.template = template;
+    this.context = {};
   }
 
-  /* 템플릿에 데이터를 입힌 템플릿으로 교체 */
-  protected setTemplateData(
-    template: string,
-    key: string,
-    value: string
-  ): string {
-    return template.replace(`{{__${key}__}}`, value);
-  }
-
-  /* 페이지 업데이트 + renderTemplate 초기 템플릿으로 복구 */
+  /* 페이지 업데이트 + handlebar 컴파일 템플릿으로 페이지 표시 */
   protected updateHTML(): void {
-    /* 
-    1. 템플릿과 관련된 모든 작업을 한다.
-    2. renderTemplate은 없앤다.
-    - 맵, 변수
-    3. element는 데이터가 아니다. 
-     */
-    let updatedTemplate = this.template;
-    console.log(this.componentMap);
-    this.componentMap.map((component) => {
-      updatedTemplate = this.setTemplateData(
-        updatedTemplate,
-        component.key,
-        component.component
-      );
-    });
-
-    this.container.innerHTML = updatedTemplate;
-    this.componentMap = [];
+    
+    this.container.innerHTML = Handlebars.compile(this.template)(this.context);
   }
 
   /**
@@ -114,18 +90,17 @@ export default abstract class Page {
   }
 
   /**
-   * UI 업데이트를 위한 추상 메서드
-   * 하위 클래스에서 구현
+   * 데이터 업데이트
    */
   abstract updateData(): Promise<void>;
 
   /* 
-  updateUI 호출, 이벤트를 바인딩
+  updateData 호출, updateHTML 호출, 이벤트를 바인딩
   error 발생시 404 url로 이동
   */
   async render(): Promise<void> {
     try {
-      await this.updateData(); // updateUI 호출
+      await this.updateData(); // updateData 호출
 
       // 별도의 렌더링 하는 메서드 이곳에서 호출
       this.updateHTML();
@@ -133,7 +108,7 @@ export default abstract class Page {
       this.bindEvents();
     } catch (error) {
       console.log(error);
-      window.location.href = "/404";
+      // window.location.href = "/404";
     }
   }
 }

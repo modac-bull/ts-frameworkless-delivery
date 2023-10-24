@@ -1,27 +1,55 @@
-// import { Params } from "@/router/router";
-import header from "@/components/header/header";
 import styles from "./detail.scss";
+import headerTemplate from "@/components/header/header";
+import foodInfoTemplate from "@/components/food/foodInfo";
+import foodOptionTemplate from "@/components/food/foodOption";
+import foodPriceTemplate from "@/components/food/foodPrice";
+
 import { getFoodDetailByIdx } from "@/apis/food/food";
-import foodInfo from "@/components/food/foodInfo";
-import foodOption from "@/components/food/foodOption";
-import foodPrice from "@/components/food/foodPrice";
 import Page from "@/core/Page";
 import { selectedFoodInfo } from "@/apis/food/types";
 import LocalStorageUtil from "@/core/LocalStorageUtil";
 import { localStorageKey } from "@/core/constant";
 
-const template = `{{__header__}}
-  <div class='area'>
-    {{__food_info__}}
+import Handlebars from "handlebars";
 
+Handlebars.registerPartial("header", headerTemplate);
+Handlebars.registerPartial("foodInfo", foodInfoTemplate);
+Handlebars.registerPartial("foodOption", foodOptionTemplate);
+Handlebars.registerPartial("foodPrice", foodPriceTemplate);
+
+const template = `
+{{! 헤더 }}
+{{> header hasBackButton=header/hasBackButton title=header/title }}
+{{! /.헤더}}
+
+  <div class='area'>
+    {{!음식 정보}}
+    {{>foodInfo 
+      data=foodInfo/data
+    }}
+    {{!/.음식 정보}}
+
+    
     <div class=${styles["option-container"]}>
       <p class=${styles["title-option"]}>추가선택</p>
-      {{__food_options__}}
+      {{! 옵션 정보}}
+      {{#each foodOptionLists}}
+        {{>foodOption 
+          id=id
+          price=price
+          title=title
+        }}
+      {{/each}}
+      {{! /.옵션 정보}}
     </div>
 
     <div class='divider-st1'></div>
 
-    {{__bottom_sheet__}}
+    {{! 하단 가격 }}
+    {{>foodPrice
+      foodPrice=foodPrice
+    }}
+    {{! /.하단 가격 }}
   </div>
   `;
 export default class FoodDetailPage extends Page {
@@ -55,13 +83,6 @@ export default class FoodDetailPage extends Page {
     selectedInfo.foodId = this.foodId;
     selectedInfo.optionIds = this.optionId;
 
-    /* 
-    !!! 로컬스토리지 JSON.Parse 모듈화 !!!
-    - 방어 코드 
-    - 예외 처리
-    - 단골 코스
-    - 예외처리, 에러 상황에서 어떻게 처리할 것인지에 대해 고민 -> 개선하기
-    */
     let cartItems = LocalStorageUtil.get<selectedFoodInfo[]>(
       this.localStorage_key,
       []
@@ -92,7 +113,7 @@ export default class FoodDetailPage extends Page {
       // 가격 정보 업데이트
       const totalPriceElement = document.getElementById("total-price");
       if (totalPriceElement) {
-        totalPriceElement.textContent = this.totalPrice.toLocaleString();
+        totalPriceElement.textContent = String(this.totalPrice);
       }
     }
   }
@@ -102,37 +123,20 @@ export default class FoodDetailPage extends Page {
     this.foodId = idx;
     this.optionId = [];
 
-    const headerElement = header({ title: "음식 상세", hasBack: true });
+    const foodInfoData = await getFoodDetailByIdx(Number(idx));
+    this.totalPrice = foodInfoData.price;
 
-    const foodDetailRes = await getFoodDetailByIdx(Number(idx));
-    this.totalPrice = foodDetailRes.price;
-    const foodInfoElement = foodInfo(foodDetailRes);
-
-    const optionInfoElement =
-      foodDetailRes.options?.map((option) => foodOption(option)).join("") ??
-      "<p>옵션이 없습니다.</p>";
-
-    const SELECTED_PRICE = this.totalPrice;
-    const bottomSheetElement = foodPrice({ price: SELECTED_PRICE });
-
-    const state = [
-      {
-        key: "header",
-        component: headerElement,
+    const context = {
+      header: {
+        hasBackButton: true,
+        title: "음식 상세",
       },
-      {
-        key: "food_info",
-        component: foodInfoElement,
+      foodInfo: {
+        data: foodInfoData,
       },
-      {
-        key: "food_options",
-        component: optionInfoElement,
-      },
-      {
-        key: "bottom_sheet",
-        component: bottomSheetElement,
-      },
-    ];
-    this.componentMap.push(...state);
+      foodOptionLists: foodInfoData.options,
+      foodPrice: this.totalPrice,
+    };
+    this.context = context;
   }
 }
